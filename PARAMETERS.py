@@ -1,0 +1,4 @@
+IMGSZ = 1024
+CONFIDENCE = 0.51
+PIXEL_RATIO = 1
+UNIT = "pixels"

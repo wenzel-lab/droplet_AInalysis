@@ -3,25 +3,25 @@ import cv2
 import numpy as np
 from os.path import join
 from time import time
+from PARAMETERS import IMGSZ, CONFIDENCE
 
-image_path = "predict_test.jpg"
-weights = "current_best_weights.pt"
-confidence = 0.5
 
-model = YOLO(weights)
-start = time()
-results = model.predict(image_path, imgsz=1024, conf=confidence, device=0)
-print(f"Demoró: {time() - start}")
-
-image = cv2.imread(image_path)
-for result in results:
-    for box in result.boxes:
+def just_predict(image_path, model, imgsz, conf, save=False):
+    results = model.predict(image_path, imgsz = imgsz, conf=conf)
+    image = cv2.imread(image_path)
+    for box in results[0].boxes:
         x1, y1, x2, y2 = map(int, box.xyxy[0])
         cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-cv2.imshow('Result', image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    cv2.imshow('Result', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-# Save image
-# cv2.imwrite(join("runs", "detect", image_path), image)
+    if save:
+        cv2.imwrite(join("runs", "detect", image_path), image)
+
+if __name__ == "__main__":
+    image_path = "snapshot_2024-02-01_03-04-44.jpg"
+    weights = "current_best_weights.pt"
+
+    just_predict(image_path=image_path, model=YOLO(weights),imgsz=IMGSZ,conf=CONFIDENCE)

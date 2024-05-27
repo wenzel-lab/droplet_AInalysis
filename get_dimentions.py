@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 from math import pi, sqrt
+from PARAMETERS import IMGSZ, CONFIDENCE, PIXEL_RATIO, UNIT
 
 class ImageParameters:
     def __init__(self, number_of_droplets: int, xs: list, ys: list, widths: list, heights: list, pixel_ratio: float, unit="pixels"):
@@ -36,8 +37,8 @@ class ImageParameters:
                 f"Standard deviation of area is {self.std_dev_area * self.pixel_ratio} {self.unit}")
     
 
-def get_dimentions(image_path, model, pixel_ratio=1, unit="pixels"):
-    result = model.predict(image_path, imgsz=1024, conf=0.6)
+def get_dimentions(image_path, model, pixel_ratio, unit, imgsz, conf):
+    result = model.predict(image_path, imgsz=imgsz, conf=conf)
     xs = []
     ys = []
     widths = []
