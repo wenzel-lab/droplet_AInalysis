@@ -2,12 +2,14 @@ from ultralytics import YOLO
 from math import pi, sqrt
 
 class ImageParameters:
-    def __init__(self, number_of_droplets: int, xs: list, ys: list, widths: list, heights: list):
+    def __init__(self, number_of_droplets: int, xs: list, ys: list, widths: list, heights: list, pixel_ratio: float, unit="pixels"):
         self.number_of_droplets = number_of_droplets
         self.xs = xs
         self.ys = ys
         self.widths = widths
         self.heights = heights
+        self.pixel_ratio = pixel_ratio
+        self.unit = unit
         self._mean_area = None
         self._std_dev_area = None
 
@@ -29,11 +31,13 @@ class ImageParameters:
         return self._std_dev_area
     
     def __str__(self):
-        return f"\n{self.number_of_droplets} droplets detected\nMean area is {self.mean_area} pixels\nStandard deviation of area is {self.std_dev_area} pixels"
+        return (f"\n{self.number_of_droplets} droplets detected\n" +
+                f"Mean area is {self.mean_area * self.pixel_ratio} {self.unit}\n" +
+                f"Standard deviation of area is {self.std_dev_area * self.pixel_ratio} {self.unit}")
     
 
-def get_dimentions(image_path, model, pixel_ratio):
-    result = model.predict("predict_test.jpg", imgsz=512, conf=0.6)
+def get_dimentions(image_path, model, pixel_ratio=1, unit="pixels"):
+    result = model.predict(image_path, imgsz=1024, conf=0.6)
     xs = []
     ys = []
     widths = []
@@ -47,7 +51,7 @@ def get_dimentions(image_path, model, pixel_ratio):
         ys.append(y1)
         widths.append(width)
         heights.append(height)
-    return ImageParameters(len(xs), xs, ys, widths, heights)
+    return ImageParameters(len(xs), xs, ys, widths, heights, pixel_ratio, unit)
     
     
 
