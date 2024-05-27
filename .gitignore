@@ -1,0 +1,5 @@
+/__pycache__
+/training_field/__pycache__
+training_field/datasets/generated_droplets/images
+training_field/datasets/generated_droplets/labels
+training_field/datasets/generated_droplets/labels.cache
