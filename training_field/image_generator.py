@@ -24,8 +24,8 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
 
         attempts = 0
         while attempts < max_attempts:
-            x = randint(10-small_width, big_width - 10)
-            y = randint(10-small_height, big_height - 10)
+            x = randint(small_width, big_width)
+            y = randint(small_height, big_height)
 
             overlap = False
             for (px, py, pwidth, pheight) in positions:
@@ -41,8 +41,7 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
                 width = small_width / big_width
                 height = small_height / big_height
 
-                if -4 < x < big_width-small_width + 5 and -5 < y < big_height - small_height + 4:
-                    labels.append(f"0 {x_center} {y_center} {width} {height}")
+                labels.append(f"0 {x_center} {y_center} {width} {height}")
                 positions.append((x, y, small_width, small_height))
                 break
             

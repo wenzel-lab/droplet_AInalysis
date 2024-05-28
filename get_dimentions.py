@@ -1,4 +1,4 @@
-from ultralytics import YOLO
+from PIL import Image
 from math import pi, sqrt
 from PARAMETERS import IMGSZ, CONFIDENCE, PIXEL_RATIO, UNIT
 
@@ -32,26 +32,30 @@ class ImageParameters:
         return self._std_dev_area
     
     def __str__(self):
-        return (f"\n{self.number_of_droplets} droplets detected\n" +
-                f"Mean area is {self.mean_area * self.pixel_ratio} {self.unit}\n" +
-                f"Standard deviation of area is {self.std_dev_area * self.pixel_ratio} {self.unit}")
+        return ("--------------------------------------------------------------\n" +
+                f"|{self.number_of_droplets} droplets detected                                       |\n" +
+                f"|Mean area is {self.mean_area * self.pixel_ratio} {self.unit}                        |\n" +
+                f"|Standard deviation of area is {self.std_dev_area * self.pixel_ratio} {self.unit}     |\n" +
+                "--------------------------------------------------------------")
     
 
 def get_dimentions(image_path, model, pixel_ratio, unit, imgsz, conf):
     result = model.predict(image_path, imgsz=imgsz, conf=conf)
+    img_width, img_height = Image.open(image_path).size
     xs = []
     ys = []
     widths = []
     heights = []
     for box in result[0].boxes:
         x1, y1, x2, y2 = box.xyxy[0]
-        width = x2 - x1
-        height = y2 - y1
+        if x1 != 0 and y1 != 0 and x2 < img_width-1 and y2 < img_height-1:
+            width = x2 - x1
+            height = y2 - y1
 
-        xs.append(x1)
-        ys.append(y1)
-        widths.append(width)
-        heights.append(height)
+            xs.append(x1)
+            ys.append(y1)
+            widths.append(width)
+            heights.append(height)
     return ImageParameters(len(xs), xs, ys, widths, heights, pixel_ratio, unit)
     
     
