@@ -1,12 +1,13 @@
 from ultralytics import YOLO
 import cv2
 import numpy as np
-from os.path import join
+from os import chdir, path, getcwd
 from time import time
 from PARAMETERS import IMGSZ, CONFIDENCE
+from miscellaneous import get_available_filename
 
 
-def just_predict(image_path, model, imgsz, conf, save=False):
+def just_predict(image_path, file_name, model, imgsz, conf, save=False):
     results = model.predict(image_path, imgsz = imgsz, conf=conf)
     image = cv2.imread(image_path)
     for box in results[0].boxes:
@@ -18,10 +19,13 @@ def just_predict(image_path, model, imgsz, conf, save=False):
     cv2.destroyAllWindows()
 
     if save:
-        cv2.imwrite(join("runs", "detect", image_path), image)
+        chdir("saved_results")
+        file_name = get_available_filename(file_name)
+        cv2.imwrite(file_name, image)
 
 if __name__ == "__main__":
-    image_path = "snapshot_2024-02-01_03-04-44.jpg"
-    weights = "current_best_weights.pt"
+    file_name = "snapshot_44.jpg"
+    image_path = path.join("testing_imgs",file_name)
+    weights = "best.pt"
 
-    just_predict(image_path=image_path, model=YOLO(weights),imgsz=IMGSZ,conf=CONFIDENCE)
+    just_predict(image_path=image_path, file_name=file_name, model=YOLO(weights), imgsz=IMGSZ, conf=CONFIDENCE, save=True)

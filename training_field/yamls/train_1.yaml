@@ -1,6 +1,6 @@
-path: ../training_field/datasets/generated_droplets
-train: images
-val: images
+path: ../datasets/my_data
+train: images/train
+val: images/val
 
 names:
   0: droplet
