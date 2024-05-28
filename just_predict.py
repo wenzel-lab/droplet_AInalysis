@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from os import chdir, path, getcwd
 from time import time
-from PARAMETERS import IMGSZ, CONFIDENCE
+from PARAMETERS import IMGSZ, CONFIDENCE, TEST_IMAGE, TEST_WEIGHT
 from miscellaneous import get_available_filename
 
 
@@ -26,8 +26,8 @@ def just_predict(image_path, file_name, model, imgsz, conf, save=False):
         cv2.imwrite(file_name, image)
 
 if __name__ == "__main__":
-    file_name = "snapshot_44.jpg"
+    file_name = TEST_IMAGE
     image_path = path.join("testing_imgs",file_name)
-    weights = "best.pt"
+    weights = path.join("weights",TEST_WEIGHT)
 
-    just_predict(image_path=image_path, file_name=file_name, model=YOLO(weights), imgsz=IMGSZ, conf=CONFIDENCE, save=True)
+    just_predict(image_path=image_path, file_name=file_name, model=YOLO(weights), imgsz=IMGSZ, conf=CONFIDENCE)
