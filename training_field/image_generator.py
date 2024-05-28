@@ -2,12 +2,13 @@ from random import randint
 from PIL import Image
 
 def check_overlap(x1, y1, w1, h1, x2, y2, w2, h2):
-    return not (x1 + w1 <= (x2-3) or x2 + w2 <= (x1-3) or y1 + h1 <= (y2-3) or y2 + h2 <= (y1-3))
+    e = 3 # this allows two images to overlap, but just a little
+    return (x2 + e < x1 + w1 and x1 < x2 + w2 - e) and (y2 + e < y1 + h1 and y1 < y2 + h2 - e)
 
 def place_images(big_image_path, small_images_path, num_small_images, output_image_path, output_labels_path):
     big_image = Image.open(big_image_path)
     small_images = [Image.open(i) for i in small_images_path]
-    
+
     big_width, big_height = big_image.size
     smalls_dimentions = [i.size for i in small_images]
 
@@ -15,7 +16,7 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
     positions = []
 
     combined_image = big_image.copy()
-    
+
     max_attempts = 100
     for _ in range(num_small_images):
         chosen_small = randint(0, len(small_images)-1)
@@ -32,7 +33,7 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
                 if check_overlap(x, y, small_width, small_height, px, py, pwidth, pheight):
                     overlap = True
                     break
-            
+
             if not overlap:
                 combined_image.paste(small_image, (x, y), small_image)
 
@@ -43,9 +44,8 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
 
                 labels.append(f"0 {x_center} {y_center} {width} {height}")
                 positions.append((x, y, small_width, small_height))
-                break
-            
-            attempts += 1
+            else:        
+                attempts += 1
 
     combined_image.save(output_image_path)
 
