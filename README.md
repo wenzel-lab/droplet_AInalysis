@@ -22,3 +22,6 @@ The droplets in this generated images will not overlap with eachother. Except fo
 The droplets and backgrounds used are choosen randomly for every training image.
 
 The background image is cropped to 640 pixels x 640 pixels when generating training images. The original size of 1024*704 became to heavy for the training. 640 x 640 was a good medium point to train faster. So, to be clear. This change of size DOES NOT impact the precission of the final product, but it DOES increase the speed of the training.
+
+# Requirements
+The libraries needed to run main.py are **ultralytics**, **pillow** and **opencv-python**. These can be automaticly installed by running **packages.py**.
