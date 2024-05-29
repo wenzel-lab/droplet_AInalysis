@@ -2,7 +2,7 @@ from random import randint
 from PIL import Image
 
 def check_overlap(x1, y1, w1, h1, x2, y2, w2, h2):
-    e = 3 # this allows two images to overlap, but just a little
+    e = 3 # Increase this value for more overlap of droplets
     return (x2 + e < x1 + w1 and x1 < x2 + w2 - e) and (y2 + e < y1 + h1 and y1 < y2 + h2 - e)
 
 def place_images(big_image_path, small_images_path, num_small_images, output_image_path, output_labels_path):
@@ -27,8 +27,7 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
     combined_image = big_image.copy()
 
     max_attempts = 25
-    placed = 0
-    too_many_failed = 0
+    placed = too_many_failed = 0
     while placed < num_small_images and too_many_failed < 20:
         chosen_small = randint(0, len(small_images)-1)
         small_image = small_images[chosen_small]
