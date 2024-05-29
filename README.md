@@ -5,7 +5,7 @@ The droplets detected at the borders of the image are not counted. The reason fo
 
 Change the values in **PARAMETERS.py** in order to change the image that is analized, the weights used, wether the result is saved in /saved_results, etc.
 
-Currently the best weight is **best_54.pt**. This one gives better sizes for the boxes and it detects more of them.
+Currently the best weight is **best_54.pt**. This one gives better sizes for the boxes and it detects more droplets.
 
 # THE TRAINING FIELD
 The weights are created in the training_field directory with the **train.py** file. This training is configured to use a nvidia graphics card with the NVIDIA CUDA toolkit. By doing this, the processing occurs in the GPU. This greatly improves the speed in which the training is done, but requires to download nvidia CUDA, nvidia CUDNN and to get a compatible version of PYTorch.
