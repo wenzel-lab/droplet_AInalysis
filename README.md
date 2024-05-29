@@ -10,7 +10,7 @@ Currently the best weight is **best_54.pt**. This one gives better sizes for the
 # THE TRAINING FIELD
 The weights are created in the training_field directory with the **train.py** file. This training is configured to use a nvidia graphics card with the NVIDIA CUDA toolkit. By doing this, the processing occurs in the GPU. This greatly improves the speed in which the training is done, but requires to download nvidia CUDA, nvidia CUDNN and to get a compatible version of PYTorch.
 
-What the training does is: make the model predict the droplets on hundreds of images and see how correct the prediction is. This is done by checking the labels (coordinates of the droplets). The model then learns from this and keeps what worked and discards what didn't. Finally the model give this "what worked and what didn't" in form of a weight (a .pt file), which is what we use in **main.py**.
+What the training does is: make the model predict the droplets on hundreds of images and see how correct the prediction is. This is done by checking the labels (coordinates of the droplets). The model then learns from this and keeps what worked and discards what didn't. Finally the model gives this "what worked and what didn't" in form of a weight (a .pt file), which is what we use in **main.py**.
 
 The training is performed on "artificially" generated images and labels. Which are created using the **make_training_data.py** file.
 
