@@ -1,0 +1,33 @@
+from cv2 import imread, rectangle, imshow, waitKey, destroyAllWindows, imwrite
+from os import chdir, path
+from miscellaneous import get_available_filename
+
+def show_boxes(results, image_path, file_name, save):
+    image = imread(image_path)
+    img_height, img_width, channels = image.shape
+    for box in results[0].boxes:
+        x1, y1, x2, y2 = map(int, box.xyxy[0])
+        if x1 != 0 and y1 != 0 and x2 < img_width-1 and y2 < img_height-1:
+            rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 1)
+
+    imshow('Result', image)
+    waitKey(0)
+    destroyAllWindows()
+
+    if save:
+        chdir("saved_results")
+        file_name = get_available_filename(file_name)
+        imwrite(file_name, image)
+
+if __name__ == "__main__":
+    from ultralytics import YOLO as Yolo
+    from PARAMETERS import IMGSZ, CONFIDENCE, TEST_IMAGE, TEST_WEIGHT, SAVE
+
+    file_name = TEST_IMAGE
+    image_path = path.join("testing_imgs",file_name)
+
+    weights = path.join("weights",TEST_WEIGHT)
+    model = Yolo(path.join("weights", TEST_WEIGHT))
+    results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE)
+
+    show_boxes(results, image_path, file_name, SAVE)

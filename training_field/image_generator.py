@@ -60,7 +60,6 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
                 attempts += 1
         if attempts == max_attempts:
             too_many_failed += 1
-    print(len(labels))
 
     combined_image.save(output_image_path)
 

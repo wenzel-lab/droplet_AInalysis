@@ -1,7 +1,6 @@
 # Different functions that are used frequently, and so are needed in many files
 from os.path import splitext, exists, join
 
-
 def get_available_filename(filename):
     base, extension = splitext(filename)
     counter = 1
