@@ -17,7 +17,7 @@ class ImageParameters:
     @property
     def mean_area(self):
         if self._mean_area is None:
-            total_area = sum(pi * w * h for w, h in zip(self.widths, self.heights))
+            total_area = sum((pi * w * h/4) for w, h in zip(self.widths, self.heights))
             self._mean_area = total_area / self.number_of_droplets
         return self._mean_area
     
@@ -27,7 +27,7 @@ class ImageParameters:
             if self._mean_area is None:
                 _ = self.mean_area
             mean = self._mean_area
-            variance = sum((pi * w * h - mean) ** 2 for w, h in zip(self.widths, self.heights)) / self.number_of_droplets
+            variance = sum(((pi * w * h / 4) - mean) ** 2 for w, h in zip(self.widths, self.heights)) / self.number_of_droplets
             self._std_dev_area = sqrt(variance)
         return self._std_dev_area
     

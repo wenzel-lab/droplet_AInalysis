@@ -7,6 +7,15 @@ def check_overlap(x1, y1, w1, h1, x2, y2, w2, h2):
 
 def place_images(big_image_path, small_images_path, num_small_images, output_image_path, output_labels_path):
     big_image = Image.open(big_image_path)
+
+    current_width, current_height = big_image.size
+    desired_size = 640
+    left = (current_width - desired_size) / 2
+    top = (current_height - desired_size) / 2
+    right = (current_width + desired_size) / 2
+    bottom = (current_height + desired_size) / 2
+    big_image = big_image.crop((left, top, right, bottom))
+
     small_images = [Image.open(i) for i in small_images_path]
 
     big_width, big_height = big_image.size
@@ -17,14 +26,16 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
 
     combined_image = big_image.copy()
 
-    max_attempts = 100
-    for _ in range(num_small_images):
+    max_attempts = 25
+    placed = 0
+    too_many_failed = 0
+    while placed < num_small_images and too_many_failed < 20:
         chosen_small = randint(0, len(small_images)-1)
         small_image = small_images[chosen_small]
         small_width, small_height = smalls_dimentions[chosen_small]
 
         attempts = 0
-        while attempts < max_attempts:
+        while attempts < max_attempts and placed < num_small_images:
             x = randint(0, big_width-small_width)
             y = randint(0, big_height-small_height)
 
@@ -44,8 +55,12 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
 
                 labels.append(f"0 {x_center} {y_center} {width} {height}")
                 positions.append((x, y, small_width, small_height))
-            else:        
+                placed += 1
+            else:
                 attempts += 1
+        if attempts == max_attempts:
+            too_many_failed += 1
+    print(len(labels))
 
     combined_image.save(output_image_path)
 

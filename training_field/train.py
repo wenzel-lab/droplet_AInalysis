@@ -6,6 +6,6 @@ torch.device("cuda:0")
 
 
 if __name__ == "__main__":
-    model = YOLO('yolov8n.yaml').load(join("runs","detect","test3","weights","best.pt"))
+    model = YOLO('yolov8n.yaml').load(join("runs","detect","test26","weights","best.pt"))
 
-    results = model.train(data=join("yamls","train_1.yaml"), epochs=10, workers=2, imgsz=1024, batch=3, name="test3", device=0, close_mosaic=0)
+    results = model.train(data=join("yamls","train_1.yaml"), epochs=50, workers=4, imgsz=640, batch=20, name="test3", device=0, close_mosaic=0)
