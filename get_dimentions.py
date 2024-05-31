@@ -1,45 +1,51 @@
 from PIL import Image
 from math import pi, sqrt
 from os.path import join
+from tabulate import tabulate
 
 class ImageParameters:
-    def __init__(self, number_of_droplets: int, xs: list, ys: list, widths: list, heights: list, pixel_ratio: float, unit="pixels"):
-        self.number_of_droplets = number_of_droplets
+    def __init__(self, n_droplets: int, xs: list, ys: list, widths: list, heights: list, pixel_ratio: float, unit="pixels"):
+        self.n_droplets = n_droplets
         self.xs = xs
         self.ys = ys
-        self.widths = widths
-        self.heights = heights
+        self.widths_lists = widths
+        self.heights_lists = heights
         self.pixel_ratio = pixel_ratio
         self.unit = unit
-        self._mean_area = None
-        self._std_dev_area = None
+        self._width = ["Width", 0, 0, self.unit] # name, mean, stdd
+        self._height = ["Height", 0, 0, self.unit]
+        self._area = ["Area", 0, 0, self.unit]
 
     @property
-    def mean_area(self):
-        if self._mean_area is None:
-            total_area = sum((w * h) for w, h in zip(self.widths, self.heights))
-            self._mean_area = total_area * pi * 0.25 / self.number_of_droplets
-        return self._mean_area
+    def area(self):
+        if self._area[1] == self._area[2] == 0:
+            total_area = sum((w * h) for w, h in zip(self.widths_lists, self.heights_lists))
+            mean = total_area * pi * 0.25 / self.n_droplets
+            variance = sum(((pi * w * h * 0.25) - mean) ** 2 for w, h in zip(self.widths_lists, self.heights_lists)) / self.n_droplets
+            self._area[1] = mean
+            self._area[2] = sqrt(variance)
+        return self._area
     
     @property
-    def std_dev_area(self):
-        if self._std_dev_area is None:
-            if self._mean_area is None:
-                _ = self.mean_area
-            mean = self._mean_area
-            variance = sum(((pi * w * h * 0.25) - mean) ** 2 for w, h in zip(self.widths, self.heights)) / self.number_of_droplets
-            self._std_dev_area = sqrt(variance)
-        return self._std_dev_area
+    def width(self):
+        if self._width[1] == self._width[2] == 0:
+            mean = sum(w for w in self.widths_lists) / self.n_droplets
+            variance = sum((w - mean)**2 for w in self.widths_lists) /self.n_droplets
+            self._width[1] = mean
+            self._width[2] = sqrt(variance)
+        return self._width
+
+    @property
+    def height(self):
+        if self._height[1] == self._height[2] == 0:
+            mean = sum(h for h in self.heights_lists) / self.n_droplets
+            variance = sum((h - mean)**2 for h in self.heights_lists) /self.n_droplets
+            self._height[1] = mean
+            self._height[2] = sqrt(variance)
+        return self._height
     
     def __str__(self):
-        box_length = 55
-        line1 = f"| Droplets: {self.number_of_droplets}"
-        line2 = f"| Mean area: {self.mean_area * self.pixel_ratio} {self.unit}"
-        line3 = f"| Standard deviation: {self.std_dev_area * self.pixel_ratio} {self.unit}"
-        string = "\n-"
-        string += "-"*box_length + "\n" + line1.ljust(box_length) + "|\n"
-        string += line2.ljust(box_length) + "|\n" + line3.ljust(box_length) + "|\n" + "-"*box_length
-        return string + "-"
+        return tabulate([self.width, self.height, self.area], headers=["", "mean", "std_dev", "unit"], tablefmt="pretty")
 
 def get_dimentions(results, image_path, pixel_ratio, unit):
     img_width, img_height = Image.open(image_path).size
