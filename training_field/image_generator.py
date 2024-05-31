@@ -63,7 +63,7 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
                 attempts += 1
         if attempts == max_attempts:
             too_many_failed += 1
-    
+
     if darken == "final":
         combined_image = random_darkening(combined_image)
 
