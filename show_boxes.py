@@ -1,8 +1,7 @@
 from cv2 import imread, rectangle, imshow, waitKey, destroyAllWindows, imwrite
 from os import chdir, path
-from miscellaneous import get_available_filename
 
-def show_boxes(results, image_path, file_name, save):
+def show_boxes(results, image_path, file_name, weight, save):
     image = imread(image_path)
     img_height, img_width, channels = image.shape
     for box in results[0].boxes:
@@ -14,10 +13,9 @@ def show_boxes(results, image_path, file_name, save):
     waitKey(0)
     destroyAllWindows()
 
-    if save:
+    if save and not path.exists(file_name.split(".")[0] + "_" + weight.split("_")[1][:-3] + ".jpg"):
         chdir("saved_results")
-        file_name = get_available_filename(file_name)
-        imwrite(file_name, image)
+        imwrite(file_name.split(".")[0] + "_" + weight.split("_")[1][:-3] + ".jpg", image)
 
 if __name__ == "__main__":
     from ultralytics import YOLO as Yolo
@@ -30,4 +28,4 @@ if __name__ == "__main__":
     model = Yolo(path.join("weights", TEST_WEIGHT))
     results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE)
 
-    show_boxes(results, image_path, file_name, SAVE)
+    show_boxes(results, image_path, file_name, TEST_WEIGHT, SAVE)

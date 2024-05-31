@@ -16,8 +16,8 @@ if decision == "1":
     image_info = get_dimentions(results, image_path, PIXEL_RATIO, UNIT)
     print(image_info)
 elif decision == "2":
-    show_boxes(results, image_path, TEST_IMAGE, SAVE)
+    show_boxes(results, image_path, TEST_IMAGE, TEST_WEIGHT, SAVE)
 elif decision == "3":
     image_info = get_dimentions(results, image_path, PIXEL_RATIO, UNIT)
     print(image_info)
-    show_boxes(results, image_path, TEST_IMAGE, SAVE)
+    show_boxes(results, image_path, TEST_IMAGE, TEST_WEIGHT, SAVE)

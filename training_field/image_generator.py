@@ -3,7 +3,7 @@ from PIL import Image
 from darken_image import random_darkening
 
 def check_overlap(x1, y1, w1, h1, x2, y2, w2, h2):
-    e = 3 # Increase this value for more overlap of droplets
+    e = 6 # Increase this value for more overlap of droplets
     return (x2 + e < x1 + w1 and x1 < x2 + w2 - e) and (y2 + e < y1 + h1 and y1 < y2 + h2 - e)
 
 def place_images(big_image_path, small_images_path, num_small_images, output_image_path, output_labels_path):
