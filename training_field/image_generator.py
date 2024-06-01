@@ -44,7 +44,7 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
             small_width += randint(-small_width//4,small_width//4)
         if expand_height:
             small_height += randint(-small_height//4,small_height//4)
-        
+
         small_image = small_image.resize((small_width, small_height))
 
         rotate = choice([0, 90, 180, 270])

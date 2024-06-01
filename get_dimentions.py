@@ -49,7 +49,7 @@ class ImageParameters:
                         headers=[str(self.n_droplets) + " Droplets", "Mean", "Std_dev", "Unit"], 
                         tablefmt="pretty")
 
-def get_dimentions(results, image_path, pixel_ratio, unit):
+def get_dimentions(results, image_path, pixel_ratio, unit, omit_border_droplets):
     img_width, img_height = Image.open(image_path).size
     xs = []
     ys = []
@@ -57,7 +57,7 @@ def get_dimentions(results, image_path, pixel_ratio, unit):
     heights = []
     for box in results[0].boxes:
         x1, y1, x2, y2 = box.xyxy[0]
-        if x1 != 0 and y1 != 0 and x2 < img_width-1 and y2 < img_height-1:
+        if (x1 > 1 and y1 > 1 and x2 < img_width-1 and y2 < img_height-1) or not omit_border_droplets:
             width = x2 - x1
             height = y2 - y1
 
@@ -69,10 +69,10 @@ def get_dimentions(results, image_path, pixel_ratio, unit):
 
 if __name__ == "__main__":
     from ultralytics import YOLO as Yolo
-    from PARAMETERS import PIXEL_RATIO, UNIT, IMGSZ, CONFIDENCE, TEST_IMAGE, TEST_WEIGHT, MAX_DETECT
+    from PARAMETERS import PIXEL_RATIO, UNIT, IMGSZ, CONFIDENCE, TEST_IMAGE, TEST_WEIGHT, MAX_DETECT, OMIT_BORDER_DROPLETS
 
     image_path = join("testing_imgs",TEST_IMAGE)
     model = Yolo(join("weights", TEST_WEIGHT))
     results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
-    image_info = get_dimentions(results, image_path, PIXEL_RATIO, UNIT)
+    image_info = get_dimentions(results, image_path, PIXEL_RATIO, UNIT, OMIT_BORDER_DROPLETS)
     print(image_info)

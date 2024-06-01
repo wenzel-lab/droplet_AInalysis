@@ -1,6 +1,8 @@
 from os.path import join
 from get_dimentions import get_dimentions
-from PARAMETERS import PIXEL_RATIO, UNIT, IMGSZ, CONFIDENCE, TEST_IMAGE, TEST_WEIGHT, SAVE, MAX_DETECT
+from PARAMETERS import (PIXEL_RATIO, UNIT, IMGSZ, 
+                        CONFIDENCE, TEST_IMAGE, TEST_WEIGHT, 
+                        SAVE, MAX_DETECT, OMIT_BORDER_DROPLETS)
 from get_boxes import get_boxes
 
 
@@ -13,11 +15,11 @@ if decision in "123":
     results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
 
 if decision == "1":
-    image_info = get_dimentions(results, image_path, PIXEL_RATIO, UNIT)
+    image_info = get_dimentions(results, image_path, PIXEL_RATIO, UNIT, OMIT_BORDER_DROPLETS)
     print(image_info)
 elif decision == "2":
-    get_boxes(results, image_path, TEST_IMAGE, TEST_WEIGHT, SAVE)
+    get_boxes(results, image_path, TEST_IMAGE, TEST_WEIGHT, SAVE, OMIT_BORDER_DROPLETS)
 elif decision == "3":
-    image_info = get_dimentions(results, image_path, PIXEL_RATIO, UNIT)
+    image_info = get_dimentions(results, image_path, PIXEL_RATIO, UNIT, OMIT_BORDER_DROPLETS)
     print(image_info)
-    get_boxes(results, image_path, TEST_IMAGE, TEST_WEIGHT, SAVE)
+    get_boxes(results, image_path, TEST_IMAGE, TEST_WEIGHT, SAVE, OMIT_BORDER_DROPLETS)
