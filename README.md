@@ -5,7 +5,7 @@ The droplets detected at the borders of the image are not counted. The reason fo
 
 The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axis are paralel with to the x and y axis from the main picture.
 
-To illustrate, in green the real area, in red the error area and in yellow the area that is missed by the calculation.
+To illustrate, in the real area that is calculated, in red the error area that is calculated and in yellow the area that is missed by the calculation.
 
 ![Droplet error area illustration](area_illustration.png)
 
