@@ -19,13 +19,13 @@ def get_boxes(results, image_path, file_name, weight, save):
 
 if __name__ == "__main__":
     from ultralytics import YOLO as Yolo
-    from PARAMETERS import IMGSZ, CONFIDENCE, TEST_IMAGE, TEST_WEIGHT, SAVE
+    from PARAMETERS import IMGSZ, CONFIDENCE, TEST_IMAGE, TEST_WEIGHT, SAVE, MAX_DETECT
 
     file_name = TEST_IMAGE
     image_path = path.join("testing_imgs",file_name)
 
     weights = path.join("weights",TEST_WEIGHT)
     model = Yolo(path.join("weights", TEST_WEIGHT))
-    results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE)
+    results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
 
     get_boxes(results, image_path, file_name, TEST_WEIGHT, SAVE)

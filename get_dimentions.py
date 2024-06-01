@@ -69,10 +69,10 @@ def get_dimentions(results, image_path, pixel_ratio, unit):
 
 if __name__ == "__main__":
     from ultralytics import YOLO as Yolo
-    from PARAMETERS import PIXEL_RATIO, UNIT, IMGSZ, CONFIDENCE, TEST_IMAGE, TEST_WEIGHT
+    from PARAMETERS import PIXEL_RATIO, UNIT, IMGSZ, CONFIDENCE, TEST_IMAGE, TEST_WEIGHT, MAX_DETECT
 
     image_path = join("testing_imgs",TEST_IMAGE)
     model = Yolo(join("weights", TEST_WEIGHT))
-    results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE)
+    results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
     image_info = get_dimentions(results, image_path, PIXEL_RATIO, UNIT)
     print(image_info)
