@@ -3,7 +3,7 @@ To predict the droplets in an image, write on the terminal "python **main.py**" 
 
 The droplets detected at the borders of the image are not counted. The reason for this is that most of them are cropped and do not appear whole. Since their actual size is unknown, their inclusion would drift the mean value of the dimentions away from the real value.
 
-The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axis are paralel with to the x and y axis from the main picture.
+The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axis are paralel to the x and y axis from the main picture.
 
 To illustrate, in green the real area that is calculated, in red the error area that is calculated and in yellow the area that is missed by the calculation.
 
