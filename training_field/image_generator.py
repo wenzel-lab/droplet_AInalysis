@@ -1,4 +1,4 @@
-from random import randint, choices
+from random import randint, choices, choice
 from PIL import Image
 from darken_image import random_darkening
 
@@ -43,9 +43,17 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
         if expand_width:
             small_width += randint(-small_width//4,small_width//4)
         if expand_height:
-            small_height += randint(-small_height//2,small_height//2)
+            small_height += randint(-small_height//4,small_height//4)
         
         small_image = small_image.resize((small_width, small_height))
+
+        rotate = choice([0, 90, 180, 270])
+        if rotate == 90 or rotate == 270:
+            s = small_height
+            small_height = small_width
+            small_width = s
+        
+        small_image = small_image.rotate(rotate, expand=True)
 
         attempts = 0
         placed = False
