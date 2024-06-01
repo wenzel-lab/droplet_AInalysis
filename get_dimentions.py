@@ -12,19 +12,9 @@ class ImageParameters:
         self.heights_lists = heights
         self.pixel_ratio = pixel_ratio
         self.unit = unit
-        self._width = ["Width", 0, 0, self.unit] # name, mean, stdd
+        self._width = ["Width", 0, 0, self.unit] # name, mean, stdd, unit
         self._height = ["Height", 0, 0, self.unit]
         self._area = ["Area", 0, 0, self.unit]
-
-    @property
-    def area(self):
-        if self._area[1] == self._area[2] == 0:
-            total_area = sum((w * h) for w, h in zip(self.widths_lists, self.heights_lists))
-            mean = total_area * pi * 0.25 / self.n_droplets
-            variance = sum(((pi * w * h * 0.25) - mean) ** 2 for w, h in zip(self.widths_lists, self.heights_lists)) / self.n_droplets
-            self._area[1] = mean
-            self._area[2] = sqrt(variance)
-        return self._area
     
     @property
     def width(self):
@@ -43,9 +33,21 @@ class ImageParameters:
             self._height[1] = mean
             self._height[2] = sqrt(variance)
         return self._height
-    
+
+    @property
+    def area(self):
+        if self._area[1] == self._area[2] == 0:
+            total_area = sum((w * h) for w, h in zip(self.widths_lists, self.heights_lists))
+            mean = total_area * pi * 0.25 / self.n_droplets
+            variance = sum(((pi * w * h * 0.25) - mean) ** 2 for w, h in zip(self.widths_lists, self.heights_lists)) / self.n_droplets
+            self._area[1] = mean
+            self._area[2] = sqrt(variance)
+        return self._area
+
     def __str__(self):
-        return tabulate([self.width, self.height, self.area], headers=["", "mean", "std_dev", "unit"], tablefmt="pretty")
+        return tabulate([self.width, self.height, self.area], 
+                        headers=[str(self.n_droplets) + " Droplets", "Mean", "Std_dev", "Unit"], 
+                        tablefmt="pretty")
 
 def get_dimentions(results, image_path, pixel_ratio, unit):
     img_width, img_height = Image.open(image_path).size

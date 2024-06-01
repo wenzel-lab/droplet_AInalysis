@@ -31,14 +31,25 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
     combined_image = big_image.copy()
 
     max_attempts = 25
-    placed = too_many_failed = 0
-    while placed < num_small_images and too_many_failed < 20:
+    placed = False
+    n_placed = too_many_failed = 0
+    while n_placed < num_small_images and too_many_failed < 20:
         chosen_small = randint(0, len(small_images)-1)
         small_image = small_images[chosen_small]
         small_width, small_height = smalls_dimentions[chosen_small]
+        expand_width = choices([True, False], weights=[0.1, 0.9], k=1)[0]
+        expand_height = choices([True, False], weights=[0.1, 0.9], k=1)[0]
+
+        if expand_width:
+            small_width += randint(-small_width//4,small_width//4)
+        if expand_height:
+            small_height += randint(-small_height//2,small_height//2)
+        
+        small_image = small_image.resize((small_width, small_height))
 
         attempts = 0
-        while attempts < max_attempts and placed < num_small_images:
+        placed = False
+        while attempts < max_attempts and not placed:
             x = randint(0, big_width-small_width)
             y = randint(0, big_height-small_height)
 
@@ -58,7 +69,8 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
 
                 labels.append(f"0 {x_center} {y_center} {width} {height}")
                 positions.append((x, y, small_width, small_height))
-                placed += 1
+                placed = True
+                n_placed += 1
             else:
                 attempts += 1
         if attempts == max_attempts:
