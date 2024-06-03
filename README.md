@@ -13,6 +13,10 @@ Change the values in **PARAMETERS.py** in order to change the image that is anal
 
 Currently the best weight is **best_7.pt**. This one gives better sizes for the boxes and it detects more droplets.
 
+## Some Results with **best_7.pt**
+![Droplet error area illustration](saved_results/snapshot_45_7.jpg)
+![Droplet error area illustration](saved_results/snapshot_22_7.jpg)
+
 # THE TRAINING FIELD
 The weights are created in the training_field directory with the **train.py** file. This training is configured to use a nvidia graphics card with the NVIDIA CUDA toolkit. By doing this, the processing occurs in the GPU. This greatly improves the speed in which the training is done, but requires to download nvidia CUDA, nvidia CUDNN and to get a compatible version of PYTorch.
 
@@ -20,7 +24,7 @@ What the training does is: make the model predict the droplets on hundreds of im
 
 The training is performed on "artificially" generated images and labels. Which are created using the **make_training_data.py** file.
 
-## TRAINING IMAGES
+## Training Images
 This images are created with real photos of backgrounds and cutouts of real droplets. Which are stored in the **real_samples** directory in the **training_field**. New droplets are added here frequently. These are ussualy edge cases that the model didn't recognize, so by adding them we can train the model again, so that it can recognize these "weird" droplets next time.
 
 The droplets in this generated images will not overlap with eachother. Except for a 3 pixel margin, to better simulate the droplet proximity of some real samples.
