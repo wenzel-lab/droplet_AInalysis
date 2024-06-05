@@ -1,29 +1,17 @@
 from random import randint, choices, choice
 from PIL import Image
-from darken_image import random_darkening
-
-def check_overlap(x1, y1, w1, h1, x2, y2, w2, h2):
-    e = 6 # Increase this value for more overlap of droplets
-    return (x2 + e < x1 + w1 and x1 < x2 + w2 - e) and (y2 + e < y1 + h1 and y1 < y2 + h2 - e)
+from image_tools import (random_darkening, transparency, 
+                         check_overlap, crop, rotate, expand)
 
 def place_images(big_image_path, small_images_path, num_small_images, output_image_path, output_labels_path):
+    big_image = crop(Image.open(big_image_path), size=640)
+    big_width, big_height = big_image.size
+
     darken = choices(["background", "final", "none"], weights=[0.2, 0.5, 0.3], k=1)[0]
-    big_image = Image.open(big_image_path)
     if darken == "background":
         big_image = random_darkening(big_image)
 
-    current_width, current_height = big_image.size
-    desired_size = 640
-    left = (current_width - desired_size) / 2
-    top = (current_height - desired_size) / 2
-    right = (current_width + desired_size) / 2
-    bottom = (current_height + desired_size) / 2
-    big_image = big_image.crop((left, top, right, bottom))
-
     small_images = [Image.open(i) for i in small_images_path]
-
-    big_width, big_height = big_image.size
-    smalls_dimentions = [i.size for i in small_images]
 
     labels = []
     positions = []
@@ -31,29 +19,14 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
     combined_image = big_image.copy()
 
     max_attempts = 25
-    placed = False
-    n_placed = too_many_failed = 0
-    while n_placed < num_small_images and too_many_failed < 20:
-        chosen_small = randint(0, len(small_images)-1)
-        small_image = small_images[chosen_small]
-        small_width, small_height = smalls_dimentions[chosen_small]
-        expand_width = choices([True, False], weights=[0.1, 0.9], k=1)[0]
-        expand_height = choices([True, False], weights=[0.1, 0.9], k=1)[0]
+    n_placed = failed = 0
+    while n_placed < num_small_images and failed < 25:
+        small_image = choice(small_images)
+        small_image = rotate(small_image)
+        small_image = expand(small_image)
+        small_image = transparency(small_image)
 
-        if expand_width:
-            small_width += randint(-small_width//4,small_width//4)
-        if expand_height:
-            small_height += randint(-small_height//4,small_height//4)
-
-        small_image = small_image.resize((small_width, small_height))
-
-        rotate = choice([0, 90, 180, 270])
-        if rotate == 90 or rotate == 270:
-            s = small_height
-            small_height = small_width
-            small_width = s
-        
-        small_image = small_image.rotate(rotate, expand=True)
+        small_width, small_height = small_image.size
 
         attempts = 0
         placed = False
@@ -81,11 +54,14 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
                 n_placed += 1
             else:
                 attempts += 1
+
         if attempts == max_attempts:
-            too_many_failed += 1
+            failed += 1
 
     if darken == "final":
         combined_image = random_darkening(combined_image)
+
+    combined_image = rotate(combined_image)
 
     combined_image.save(output_image_path)
 

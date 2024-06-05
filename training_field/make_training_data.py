@@ -4,6 +4,8 @@ from random import choice, choices, randint
 
 backgrounds_dir = path.join("real_samples", "backgrounds")
 droplets_dir = path.join("real_samples", "droplets")
+backgrounds_paths = [path.join(backgrounds_dir, f) for f in listdir(backgrounds_dir) if path.isfile(path.join(backgrounds_dir, f))]
+droplet_paths = [path.join(droplets_dir, f) for f in listdir(droplets_dir) if path.isfile(path.join(droplets_dir, f))]
 
 outputs_dirs = []
 
@@ -16,11 +18,7 @@ val_labels_dir = path.join("datasets", "labels", "val")
 outputs_dirs.append((val_images_dir, val_labels_dir))
 
 for images_dir, labels_dir in outputs_dirs:
-    backgrounds_paths = [path.join(backgrounds_dir, f) for f in listdir(backgrounds_dir) if path.isfile(path.join(backgrounds_dir, f))]
-    droplet_paths = [path.join(droplets_dir, f) for f in listdir(droplets_dir) if path.isfile(path.join(droplets_dir, f))]
-
-    for i in range(len(backgrounds_paths)):
-        for j in range(i*40, i*40 + 40):
+        for j in range(640):
             droplet_sample_size = randint(1,len(droplet_paths)-1)
             droplets_paths = choices(droplet_paths, k=droplet_sample_size)
             background_path = choice(backgrounds_paths)
@@ -28,7 +26,7 @@ for images_dir, labels_dir in outputs_dirs:
             place_images(
                 big_image_path = background_path,
                 small_images_path = droplets_paths,
-                num_small_images = randint(0,350),
+                num_small_images = randint(0,400),
                 output_image_path = path.join(images_dir, str(j) +".jpg"),
                 output_labels_path = path.join(labels_dir, str(j) + ".txt")
             )
