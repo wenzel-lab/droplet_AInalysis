@@ -61,8 +61,6 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
     if darken == "final":
         combined_image = random_darkening(combined_image)
 
-    combined_image = rotate(combined_image)
-
     combined_image.save(output_image_path)
 
     with open(output_labels_path, 'w') as f:
