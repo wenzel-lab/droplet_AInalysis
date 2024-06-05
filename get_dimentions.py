@@ -14,7 +14,7 @@ class ImageParameters:
         self.unit = unit
         self._width = ["Width", 0, 0, self.unit] # name, mean, stdd, unit
         self._height = ["Height", 0, 0, self.unit]
-        self._area = ["Area", 0, 0, self.unit]
+        self._area = ["Area", 0, 0, self.unit + "²"]
     
     @property
     def width(self):

@@ -54,7 +54,7 @@ def transparency(image):
             r, g, b, a = pixels_RGBA[y * width + x]
 
             if start == "left" and x < width * gradient_size and a > 50:
-                a = (starting_transparency + int((255 - starting_transparency) * (x / (width * gradient_size))))
+                a = starting_transparency + int((255 - starting_transparency) * (x / (width * gradient_size)))
             if start == "right" and x >= width * (1 - gradient_size) and a > 50:
                 a = starting_transparency + int((255 - starting_transparency) * ((width - 1 - x) / (width * gradient_size)))
             if start == "top" and y < height * gradient_size and a > 50:

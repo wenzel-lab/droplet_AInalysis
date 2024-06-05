@@ -11,11 +11,11 @@ To illustrate, in green the real area that is calculated, in red the error area 
 
 Change the values in **PARAMETERS.py** in order to change the image that is analized, the weights used, wether the result is saved in /saved_results, etc.
 
-Currently the best weight is **best_7.pt**. This one gives better sizes for the boxes and it detects more droplets.
+Currently the best weight is **best_82.pt**. This one gives better sizes for the boxes and it detects more droplets.
 
-## Some Results with **best_7.pt**
-![Droplet error area illustration](saved_results/snapshot_45_7.jpg)
-![Droplet error area illustration](saved_results/snapshot_22_7.jpg)
+## Some Results with **best_82.pt**
+![Droplet error area illustration](saved_results/snapshot_45_82.jpg)
+![Droplet error area illustration](saved_results/snapshot_22_82.jpg)
 
 # THE TRAINING FIELD
 The weights are created in the training_field directory with the **train.py** file. This training is configured to use a nvidia graphics card with the NVIDIA CUDA toolkit. By doing this, the processing occurs in the GPU. This greatly improves the speed in which the training is done, but requires to download nvidia CUDA, nvidia CUDNN and to get a compatible version of PYTorch.
