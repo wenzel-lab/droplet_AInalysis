@@ -25,13 +25,17 @@ What the training does is: make the model predict the droplets on hundreds of im
 The training is performed on "artificially" generated images and labels. Which are created using the **make_training_data.py** file.
 
 ## Training Images
-This images are created with real photos of backgrounds and cutouts of real droplets. Which are stored in the **real_samples** directory in the **training_field**. New droplets are added here frequently. These are ussualy edge cases that the model didn't recognize, so by adding them we can train the model again, so that it can recognize these "weird" droplets next time.
+This images are created by pasting hand-made cutouts of real droplets on random places of real background photos. These real samples are stored in the **real_samples** directory in the **training_field** and the Training Images are stored in **datasets**. On this directory the labels of the pasted droplets are also stored on the labels directory. 
 
-The droplets in this generated images will not overlap with eachother. Except for a 3 pixel margin, to better simulate the droplet proximity of some real samples.
+New droplets are added to **real_samples** frequently. These are often edge cases that the model didn't recognize, so by adding them we can train the model again, so that it can recognize these "weird" droplets next time.
+
+However, adding new droplets is not the only technique used to improve the detection rate. When placed, droplets are randomly: rotated, streched, given transparency and darkened. These have proven to be very good techniques, and have made the general detection error much lower.
+
+The droplets in generated images will not overlap with eachother, except for a 6 pixel margin. This is made to better simulate the droplet proximity of real photos.
 
 The droplets and backgrounds used are choosen randomly for every training image.
 
-The background image is cropped to 640 pixels x 640 pixels when generating training images. The original size of 1024*704 became to heavy for the training. 640 x 640 was a good medium point to train faster. So, to be clear. This change of size DOES NOT impact the precission of the final product, but it DOES increase the speed of the training.
+The background image is cropped to 640 pixels x 640 pixels when generating training images. The original size of 1024*704 became to heavy for the training, making it spend twice the memory and taking twice the time. 640 x 640 was a good medium point to train faster. So, to be clear. This change of size DOES NOT impact the precission of the final product, but it DOES increase the speed of the training.
 
 # Requirements
 The libraries needed to run main.py are **ultralytics**, **pillow**, **opencv-python** and **tabulate**. These can be automaticly installed by running **packages.py**.

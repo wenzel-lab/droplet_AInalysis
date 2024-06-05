@@ -3,8 +3,17 @@ from PIL import Image
 from image_tools import (random_darkening, transparency, 
                          check_overlap, crop, rotate, expand)
 
+
+def format_coordinates(x, y, small_width, small_height, big_width, big_height) -> str:
+    x_center = (x + small_width / 2) / big_width
+    y_center = (y + small_height / 2) / big_height
+    width = small_width / big_width
+    height = small_height / big_height
+
+    return f"0 {x_center} {y_center} {width} {height}"
+
 def place_images(big_image_path, small_images_path, num_small_images, output_image_path, output_labels_path):
-    big_image = crop(Image.open(big_image_path), size=640)
+    big_image = rotate(crop(Image.open(big_image_path), size=640))
     big_width, big_height = big_image.size
 
     darken = choices(["background", "final", "none"], weights=[0.2, 0.5, 0.3], k=1)[0]
@@ -34,22 +43,14 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
             x = randint(0, big_width-small_width)
             y = randint(0, big_height-small_height)
 
-            overlap = False
-            for (px, py, pwidth, pheight) in positions:
-                if check_overlap(x, y, small_width, small_height, px, py, pwidth, pheight):
-                    overlap = True
-                    break
+            overlap = check_overlap(x, y, small_width, small_height, positions)
 
             if not overlap:
                 combined_image.paste(small_image, (x, y), small_image)
 
-                x_center = (x + small_width / 2) / big_width
-                y_center = (y + small_height / 2) / big_height
-                width = small_width / big_width
-                height = small_height / big_height
-
-                labels.append(f"0 {x_center} {y_center} {width} {height}")
+                labels.append(format_coordinates(x, y, small_width, small_height, big_width, big_height))
                 positions.append((x, y, small_width, small_height))
+
                 placed = True
                 n_placed += 1
             else:

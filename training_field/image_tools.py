@@ -2,9 +2,12 @@ from random import uniform, choice, randint, choices
 from PIL import ImageEnhance, Image
 
 
-def check_overlap(x1, y1, w1, h1, x2, y2, w2, h2):
-    e = 6 # Increase this value for more overlap of droplets
-    return (x2 + e < x1 + w1 and x1 < x2 + w2 - e) and (y2 + e < y1 + h1 and y1 < y2 + h2 - e)
+def check_overlap(x1, y1, w1, h1, positions):
+    o = 6 # Increase this value for more overlap of droplets
+    for (x2, y2, w2, h2) in positions:
+        if (x2 + o < x1 + w1 and x1 < x2 + w2 - o) and (y2 + o < y1 + h1 and y1 < y2 + h2 - o):
+            return True
+    return False
 
 def rotate(image):
     rotate = choice([0, 90, 180, 270])
