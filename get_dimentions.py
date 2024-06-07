@@ -9,7 +9,7 @@ class ImageParameters:
                  widths: list, heights: list, areas: list, 
                  width_bars: dict, height_bars: dict, area_bars: dict,
                  pixel_ratio: float, unit: str,
-                 width_sums, height_sums, area_sums):
+                 width_sums = None, height_sums = None, area_sums = None):
 
         self.n_droplets = n_droplets
 
@@ -24,9 +24,10 @@ class ImageParameters:
         self.pixel_ratio = pixel_ratio
         self.unit = unit
 
-        self._width_sums = width_sums # list: [sum, sum of squares]
-        self._height_sums = height_sums
-        self._area_sums = area_sums
+
+        self._width_sums = [0, 0] if width_sums is None else width_sums # list: [sum, sum of squares]
+        self._height_sums = [0, 0] if height_sums is None else height_sums
+        self._area_sums = [0, 0] if area_sums is None else area_sums
 
         self._width_distribution = ["Width", 0, 1, self.unit, False] # [name, mean, stdd, unit, Calculated]
         self._height_distribution = ["Height", 0, 1, self.unit, False]
@@ -130,8 +131,7 @@ def get_dimentions(results, image_path, pixel_ratio, unit, omit_border_droplets)
             areas.append(area)
     return ImageParameters(len(widths), widths, heights, areas, 
                            width_bars, height_bars, area_bars, 
-                           pixel_ratio, unit,
-                           [0, 0], [0, 0], [0, 0])
+                           pixel_ratio, unit)
 
 if __name__ == "__main__":
     from ultralytics import YOLO as Yolo

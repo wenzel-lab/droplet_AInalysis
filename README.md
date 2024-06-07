@@ -7,7 +7,7 @@ The area of droplets it's calculated asumming droplets have the form of an ellip
 
 To illustrate, in green the real area that is calculated, in red the error area that is calculated and in yellow the area that is missed by the calculation.
 
-![Droplet error area illustration](area_illustration.png)
+![Droplet error area illustration](readme_img/area_illustration.png)
 
 Change the values in **PARAMETERS.py** in order to change the image that is analized, the weights used, wether the result is saved in /saved_results, etc.
 
@@ -16,6 +16,12 @@ Currently the best weight is **best_82.pt**. This one gives better sizes for the
 ## Some Results with **best_82.pt**
 ![Droplet error area illustration](saved_results/snapshot_45_82.jpg)
 ![Droplet error area illustration](saved_results/snapshot_22_82.jpg)
+
+The standard deviation of the parameters, such as width, height and area is calculated with this incremental formula:
+
+![Incremental stdd formula](readme_img/incremental_stdd.png)
+
+This formula allows to "add" the standard deviation of two or more images together, without having to store all of the dimentions of droplets. Basicly, after calculating the standard deviation once, the values from which it was calculated can be forgotten, since they won't be necessary when we want to calculate the new standard deviation from adding another set of droplets. 
 
 # THE TRAINING FIELD
 The weights are created in the training_field directory with the **train.py** file. This training is configured to use a nvidia graphics card with the NVIDIA CUDA toolkit. By doing this, the processing occurs in the GPU. This greatly improves the speed in which the training is done, but requires to download nvidia CUDA, nvidia CUDNN and to get a compatible version of PYTorch.
