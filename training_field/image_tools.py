@@ -14,6 +14,15 @@ def rotate(image):
 
     return image.rotate(rotate, expand=True)
 
+def flip_flop(image):
+    flip = choice([True, False])
+    flop = choice([True, False])
+    if flip:
+        image = image.transpose(Image.FLIP_LEFT_RIGHT)
+    if flop:
+        image = image.transpose(Image.FLIP_TOP_BOTTOM)
+    return image
+
 def expand(image):
     width, height = image.size
     expand_width = choices([True, False], weights=[0.3, 0.7], k=1)[0]
@@ -27,7 +36,7 @@ def expand(image):
     return image.resize((width, height))
 
 def random_darkening(image):
-    factor = uniform(0.3, 0.85)
+    factor = uniform(0.3, 1.5)
     enhancer = ImageEnhance.Brightness(image)
     darken_image = enhancer.enhance(factor)
 

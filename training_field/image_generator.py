@@ -1,7 +1,8 @@
 from random import randint, choices, choice
 from PIL import Image
 from image_tools import (random_darkening, transparency, 
-                         check_overlap, crop, rotate, expand)
+                         check_overlap, crop, rotate, 
+                         flip_flop, expand)
 
 
 def format_coordinates(x, y, small_width, small_height, big_width, big_height) -> str:
@@ -13,7 +14,9 @@ def format_coordinates(x, y, small_width, small_height, big_width, big_height) -
     return f"0 {x_center} {y_center} {width} {height}"
 
 def place_images(big_image_path, small_images_path, num_small_images, output_image_path, output_labels_path):
-    big_image = rotate(crop(Image.open(big_image_path), size=640))
+    big_image = crop(Image.open(big_image_path), size=640)
+    big_image = rotate(big_image)
+    big_image = flip_flop(big_image)
     big_width, big_height = big_image.size
 
     darken = choices(["background", "final", "none"], weights=[0.2, 0.5, 0.3], k=1)[0]
@@ -32,7 +35,9 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
     while n_placed < num_small_images and failed < 25:
         small_image = choice(small_images)
         small_image = rotate(small_image)
+        small_image = flip_flop(small_image)
         small_image = expand(small_image)
+        small_image = random_darkening(small_image)
         small_image = transparency(small_image)
 
         small_width, small_height = small_image.size
