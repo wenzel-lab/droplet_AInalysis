@@ -1,17 +1,17 @@
 from os.path import join
 from get_dimentions import get_dimentions
 from get_boxes import get_boxes
-from PARAMETERS import (PIXEL_RATIO, UNIT, IMGSZ, 
-                        CONFIDENCE, TEST_IMAGE, TEST_WEIGHT, 
-                        SAVE, MAX_DETECT, OMIT_BORDER_DROPLETS)
+from PARAMETERS import (TEST_IMAGE, TEST_WEIGHT, IMGSZ, 
+                        CONFIDENCE, MAX_DETECT, PIXEL_RATIO, 
+                        UNIT, OMIT_BORDER_DROPLETS, SAVE)
 
 
 decision = input("Choose what to do\n1. Get dimentions\n2. Show boxes\n3. Both\nX. Exit\n-> ")
 
 if decision in "123":
     from ultralytics import YOLO as Yolo
-    image_path = join("testing_imgs",TEST_IMAGE)
-    model = Yolo(join("weights", TEST_WEIGHT))
+    image_path = join("..", "testing_imgs",TEST_IMAGE)
+    model = Yolo(join("..", "weights", TEST_WEIGHT))
 
 if decision == "1":
     results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)

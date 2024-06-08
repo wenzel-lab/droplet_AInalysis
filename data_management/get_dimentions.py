@@ -2,7 +2,10 @@ from PIL import Image
 from math import pi, sqrt
 from os.path import join
 from tabulate import tabulate
-from data_tools import sum_dictionarys
+try:
+    from data_management.data_tools import sum_dictionarys
+except Exception:
+    from data_tools import sum_dictionarys
 
 class ImageParameters:
     def __init__(self, n_droplets: int, 
@@ -79,14 +82,18 @@ class ImageParameters:
     def __add__(self, other):
         n_droplets = self.n_droplets + other.n_droplets
 
+        new_width_bars = sum_dictionarys(self.width_bars, other.width_bars)
+        new_height_bars = sum_dictionarys(self.height_bars, other.height_bars)
+        new_area_bars = sum_dictionarys(self.area_bars, other.area_bars)
+
+        new_width_sums = [w1 + w2 for w1, w2 in zip(self.width_sums, other.width_sums)]
+        new_height_sums = [h1 + h2 for h1, h2 in zip(self.height_sums, other.height_sums)]
+        new_area_sums = [a1 + a2 for a1, a2 in zip(self.area_sums, other.area_sums)]
+
         return ImageParameters(n_droplets, [], [], [], 
-                               sum_dictionarys(self.width_bars, other.width_bars), 
-                               sum_dictionarys(self.height_bars, other.height_bars), 
-                               sum_dictionarys(self.area_bars, other.area_bars), 
+                               new_width_bars, new_height_bars, new_area_bars, 
                                self.pixel_ratio, self.unit, 
-                               [w1 + w2 for w1, w2 in zip(self.width_sums, other.width_sums)], 
-                               [h1 + h2 for h1, h2 in zip(self.height_sums, other.height_sums)], 
-                               [a1 + a2 for a1, a2 in zip(self.area_sums, other.area_sums)])
+                               new_width_sums, new_height_sums, new_area_sums)
 
     def __str__(self):
         return tabulate(tabular_data=

@@ -1,4 +1,5 @@
 /__pycache__
+data_management/__pycache__
 /training_field/__pycache__
 training_field/datasets/images/train
 training_field/datasets/images/val

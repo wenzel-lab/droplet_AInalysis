@@ -17,8 +17,11 @@ def get_boxes(results, image_path, file_name, weight, save, omit_border_droplets
 
             droplet_images.append(droplet_image)
 
-            if save and not path.exists(file_name.split(".")[0] + "_" + weight.split("_")[1][:-3] + ".jpg"):
+            if save:
                 draw.rectangle([(x1, y1), (x2, y2)], outline=(0, 255, 0), width=1)
+    if save:
+        chdir(path.join("..", "saved_results"))
+        image.save(file_name.split(".")[0] + "_" + weight.split("_")[1][:-3] + ".jpg")
     
     return droplet_images
 
