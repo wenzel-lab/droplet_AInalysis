@@ -1,18 +1,17 @@
-from copy import deepcopy
-from math import pi, sqrt
+from math import sqrt
 from tabulate import tabulate
 try:
     from data_tools import (sum_int, sub_int,
                             sum_sums, sub_sums,
                             sum_bars, sub_bars, 
                             sum_area_bars, sub_area_bars,
-                            choose_interval, sort_and_group)
+                            choose_interval)
 except Exception:
     from data_management.data_tools import (sum_int, sub_int,
                                             sum_sums, sub_sums,
                                             sum_bars, sub_bars, 
                                             sum_area_bars, sub_area_bars,
-                                            choose_interval, sort_and_group)
+                                            choose_interval)
 
 class ImageData:
     batch_size = 60
@@ -20,11 +19,10 @@ class ImageData:
 
     def __init__(self, n_droplets: int, 
                  width_sums: list, height_sums: list, area_sums: list, 
-                 width_bars: dict, height_bars: dict, area_bars: dict, area_interval: int, 
-                 pixel_ratio: float, unit: str, images_added = 1):
+                 width_bars: dict, height_bars: dict, area_bars: dict, 
+                 area_interval: int, unit: str, images_added = 1):
 
         self.n_droplets = n_droplets
-        self.images_added = images_added
 
         self.width_sums = width_sums
         self.height_sums = height_sums
@@ -35,8 +33,8 @@ class ImageData:
         self.area_bars = area_bars
         self.area_interval = area_interval
 
-        self.pixel_ratio = pixel_ratio
         self.unit = unit
+        self.images_added = images_added
 
         self._width_distribution = ["Width", 0, 1, self.unit, False] # [name, mean, stdd, unit, Calculated]
         self._height_distribution = ["Height", 0, 1, self.unit, False]
@@ -50,8 +48,8 @@ class ImageData:
             mean = sums[0][0] / self.n_droplets[0] if self.n_droplets[0] else 0
             variance = sums[0][1] / self.n_droplets[0] - mean**2 if self.n_droplets[0] else 1
 
-            distribution[1] = round(float(mean * self.pixel_ratio), rounding)
-            distribution[2] = round(sqrt(variance) * self.pixel_ratio, rounding)
+            distribution[1] = round(float(mean), rounding)
+            distribution[2] = round(sqrt(variance), rounding)
         return distribution
 
     @property
@@ -65,11 +63,8 @@ class ImageData:
     @property
     def area_distribution(self):
         return self._calculate_distribution(self.area_sums, self._area_distribution, 2)
-    
-    def forget(self):
-        pass
 
-    def manage_addition(self, list1, list2, add, sub, chosen_interval = 0, chosen_instance = ""):
+    def _manage_addition(self, list1, list2, add, sub, chosen_interval = 0, chosen_instance = ""):
         if chosen_instance == "self":
             total = add(list1[0], list2[0], chosen_interval)
         elif chosen_instance == "other":
@@ -95,18 +90,18 @@ class ImageData:
         return [total, new_list]
 
     def __add__(self, other):
-        new_n_droplets = self.manage_addition(self.n_droplets, other.n_droplets, sum_int, sub_int)
+        new_n_droplets = self._manage_addition(self.n_droplets, other.n_droplets, sum_int, sub_int)
 
         new_area_interval, chosen_instance = choose_interval(self.area_interval, other.area_interval[0], self.images_added)
 
-        new_width_bars = self.manage_addition(self.width_bars, other.width_bars, sum_bars, sub_bars)
-        new_height_bars = self.manage_addition(self.height_bars, other.height_bars, sum_bars, sub_bars)
-        new_area_bars = self.manage_addition(self.area_bars, other.area_bars, sum_area_bars, sub_area_bars, 
+        new_width_bars = self._manage_addition(self.width_bars, other.width_bars, sum_bars, sub_bars)
+        new_height_bars = self._manage_addition(self.height_bars, other.height_bars, sum_bars, sub_bars)
+        new_area_bars = self._manage_addition(self.area_bars, other.area_bars, sum_area_bars, sub_area_bars, 
                                              new_area_interval[0], chosen_instance)
 
-        new_width_sums = self.manage_addition(self.width_sums, other.width_sums, sum_sums, sub_sums)
-        new_height_sums =  self.manage_addition(self.height_sums, other.height_sums, sum_sums, sub_sums)
-        new_area_sums =  self.manage_addition(self.area_sums, other.area_sums, sum_sums, sub_sums)
+        new_width_sums = self._manage_addition(self.width_sums, other.width_sums, sum_sums, sub_sums)
+        new_height_sums =  self._manage_addition(self.height_sums, other.height_sums, sum_sums, sub_sums)
+        new_area_sums =  self._manage_addition(self.area_sums, other.area_sums, sum_sums, sub_sums)
 
         if ImageData.batch_size*ImageData.max_batches == self.images_added:
             self.images_added -= ImageData.batch_size
@@ -115,7 +110,7 @@ class ImageData:
 
         return ImageData(new_n_droplets, new_width_sums, new_height_sums, new_area_sums, 
                          new_width_bars, new_height_bars, new_area_bars, new_area_interval,
-                         self.pixel_ratio, self.unit, images_added)
+                         self.unit, images_added)
 
     def __str__(self):
         return tabulate(tabular_data=

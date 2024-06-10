@@ -5,7 +5,8 @@ def get_boxes(results, image_path, file_name, weight, save, omit_border_droplets
     image = Image.open(image_path)
     img_width, img_height = image.size
 
-    draw = ImageDraw.Draw(image)
+    if save:
+        draw = ImageDraw.Draw(image)
 
     droplet_images = []
 

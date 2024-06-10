@@ -9,28 +9,35 @@ from scipy import stats
 import matplotlib.pyplot as plot
 
 
-def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, interval = 1):
+def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, pixel_ratio = 1, interval = 1):
     categories = []
     quantities = []
+    if title == "Area":
+        pixel_ratio *= pixel_ratio
     for key, value in bars:
-        categories.append(key)
+        categories.append(key * pixel_ratio)
         quantities.append(value)
-    height = n * interval
+    height = n * interval * pixel_ratio
 
-    ax.bar(categories, quantities, width = interval * 0.8, color='skyblue')
+    ax.bar(categories, quantities, width = interval * pixel_ratio * 0.8, color='skyblue')
 
     x = np.linspace(max(mean - 3.5*std, 0), mean + 3.5*std, 100)
     y = stats.norm.pdf(x, mean, std)
     ax.plot(x, y*height, color='darkblue')
 
-    squared = ""
-    if title == "Area":
-        squared = "²"
+    squared = "" if title == "Area" else "²"
 
     ax.set_title(title + " (" + unit + ")")
     ax.set_xlabel("|  μ = " + str(mean) + " " + unit + squared +"  |  |  σ = " + str(std) + " " + unit + squared + "  |")
     if title == "Width":
         ax.set_ylabel("Quantity")
+        ax.text(0.02, 0.98, "Droplets: " + str(n), 
+                transform=ax.transAxes, fontsize=12, 
+                verticalalignment='top', bbox=dict(facecolor='white', alpha=0.5))
+    if title == "Area":
+        ax.text(0.02, 0.98, "Interval size: " + str(round(interval*pixel_ratio,2)) + " " + unit, 
+                transform=ax.transAxes, fontsize=12, 
+                verticalalignment='top', bbox=dict(facecolor='white', alpha=0.5))
 
 def show_graphics(image_data):
     width_bars = image_data.width_bars[0]
@@ -50,9 +57,9 @@ def show_graphics(image_data):
     n = image_data.n_droplets[0]
 
     fig, axs = plot.subplots(1, 3, figsize=(15, 5), num=str(n) + " Droplets Detected")
-    plot_bar_with_normal(axs[0],width_bars, width_mean, width_std, 'Width', unit, n)
-    plot_bar_with_normal(axs[1], height_bars, height_mean, height_std, 'Height', unit, n)
-    plot_bar_with_normal(axs[2], area_bars, area_mean, area_std, 'Area', unit, n, area_interval)
+    plot_bar_with_normal(axs[0],width_bars, width_mean, width_std, 'Width', unit, n, PIXEL_RATIO)
+    plot_bar_with_normal(axs[1], height_bars, height_mean, height_std, 'Height', unit, n, PIXEL_RATIO)
+    plot_bar_with_normal(axs[2], area_bars, area_mean, area_std, 'Area', unit, n, PIXEL_RATIO, area_interval)
 
     plot.show()
 
@@ -67,6 +74,7 @@ if decision == "1":
     results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
     image_info_1 = get_dimentions(results, image_path, PIXEL_RATIO, UNIT, OMIT_BORDER_DROPLETS)
     print(image_info_1)
+    show_graphics(image_info_1)
 
 elif decision == "2":
     results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
