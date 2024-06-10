@@ -1,7 +1,7 @@
 # MAIN FUNCTIONALITIES
-To predict the droplets in an image, write on the terminal "python **main.py**" while being on the repository's root. This will give the option to get the dimentions and to show the bounding boxes of the droplets given by the detection model.
+To predict the droplets in an image, go to the data_management directory an execute "python **test_functions.py**" on the terminal. This will give the option to get the dimentions and to show the bounding boxes of the droplets given by the detection model.
 
-The droplets detected at the borders of the image are not counted. The reason for this is that most of them are cropped and do not appear whole. Since their actual size is unknown, their inclusion would drift the mean value of the dimentions away from the real value.
+The droplets detected at the borders of the image are not counted. The reason for this is that most of them do not appear whole. Since their actual size is unknown, their inclusion would drift the mean value of the dimentions away from the real value.
 
 The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axis are paralel to the x and y axis from the main picture.
 
