@@ -9,13 +9,13 @@ from scipy import stats
 import matplotlib.pyplot as plot
 
 
-def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, interval = 1, intervals_sum = 1):
+def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, interval = 1):
     categories = []
     quantities = []
     for key, value in bars:
         categories.append(key)
         quantities.append(value)
-    height = n * intervals_sum
+    height = n * interval
 
     ax.bar(categories, quantities, width = interval * 0.8, color='skyblue')
 
@@ -45,23 +45,22 @@ def show_graphics(image_data):
     area_mean = image_data.area_distribution[1]
     area_std = image_data.area_distribution[2]
     area_interval = image_data.area_interval[0]
-    intervals_sum = image_data.intervals_sum[0]
 
     unit = image_data.unit
     n = image_data.n_droplets[0]
 
-    fig, axs = plot.subplots(1, 3, figsize=(15, 5), num=str(n) + " Droplets")
+    fig, axs = plot.subplots(1, 3, figsize=(15, 5), num=str(n) + " Droplets Detected")
     plot_bar_with_normal(axs[0],width_bars, width_mean, width_std, 'Width', unit, n)
     plot_bar_with_normal(axs[1], height_bars, height_mean, height_std, 'Height', unit, n)
-    plot_bar_with_normal(axs[2], area_bars, area_mean, area_std, 'Area', unit, n, area_interval, intervals_sum)
+    plot_bar_with_normal(axs[2], area_bars, area_mean, area_std, 'Area', unit, n, area_interval)
 
     plot.show()
 
 # decision = "1" # input("Choose what to do\n1. Get dimentions\n2. Show boxes\n3. Both\nX. Exit\n-> ")
 
 from ultralytics import YOLO as Yolo
-image_path_1 = join("..", "testing_imgs","snapshot_00.jpg")
-image_path_2 = join("..", "testing_imgs","none.jpg")
+image_path_1 = join("..", "testing_imgs","snapshot_45.jpg")
+image_path_2 = join("..", "testing_imgs","snapshot_22.jpg")
 model = Yolo(join("..", "weights", TEST_WEIGHT))
 
 results = model.predict(image_path_1, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)

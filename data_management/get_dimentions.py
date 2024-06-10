@@ -49,8 +49,7 @@ def get_dimentions(results, image_path, pixel_ratio, unit, omit_border_droplets)
     return ImageData(format(len(widths_vector)), 
                      format(width_sums), format(height_sums), format(area_sums), 
                      format(width_bars), format(height_bars), format(area_bars), 
-                     format(area_interval), format(area_interval), 
-                     pixel_ratio, unit)
+                     format(area_interval), pixel_ratio, unit)
 
 if __name__ == "__main__":
     from ultralytics import YOLO as Yolo

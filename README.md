@@ -14,6 +14,8 @@ Change the values in **PARAMETERS.py** in order to change the image that is anal
 Currently the best weight is **best_9.pt**. This one gives better sizes for the boxes and it detects more droplets.
 
 ## Some Results with **best_9.pt**
+<img src="saved_results/snapshot_45_9.jpg" alt="Texto alternativo" style="width: 500px; height: auto;">
+
 ![Droplet error area illustration](saved_results/snapshot_45_9.jpg)
 ![Droplet error area illustration](saved_results/snapshot_22_9.jpg)
 

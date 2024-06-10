@@ -20,7 +20,7 @@ class ImageData:
 
     def __init__(self, n_droplets: int, 
                  width_sums: list, height_sums: list, area_sums: list, 
-                 width_bars: dict, height_bars: dict, area_bars: dict, area_interval: int, intervals_sum: list,
+                 width_bars: dict, height_bars: dict, area_bars: dict, area_interval: int, 
                  pixel_ratio: float, unit: str, images_added = 1):
 
         self.n_droplets = n_droplets
@@ -34,7 +34,6 @@ class ImageData:
         self.height_bars = height_bars
         self.area_bars = area_bars
         self.area_interval = area_interval
-        self.intervals_sum = intervals_sum
 
         self.pixel_ratio = pixel_ratio
         self.unit = unit
@@ -99,7 +98,6 @@ class ImageData:
         new_n_droplets = self.manage_addition(self.n_droplets, other.n_droplets, sum_int, sub_int)
 
         new_area_interval, chosen_instance = choose_interval(self.area_interval, other.area_interval[0], self.images_added)
-        new_intervals_sum = self.manage_addition(self.intervals_sum, other.intervals_sum, sum_int, sub_int)
 
         new_width_bars = self.manage_addition(self.width_bars, other.width_bars, sum_bars, sub_bars)
         new_height_bars = self.manage_addition(self.height_bars, other.height_bars, sum_bars, sub_bars)
@@ -116,7 +114,7 @@ class ImageData:
         images_added = self.images_added + 1
 
         return ImageData(new_n_droplets, new_width_sums, new_height_sums, new_area_sums, 
-                         new_width_bars, new_height_bars, new_area_bars, new_area_interval, new_intervals_sum,
+                         new_width_bars, new_height_bars, new_area_bars, new_area_interval,
                          self.pixel_ratio, self.unit, images_added)
 
     def __str__(self):
