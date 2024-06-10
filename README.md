@@ -62,4 +62,4 @@ The background image is cropped to 640 pixels x 640 pixels when generating train
 # Requirements
 The libraries needed to run main.py are **ultralytics**, **pillow**, **opencv-python** and **tabulate**. These can be automaticly installed by running **packages.py**. 
 
-(New libraries are added normally, so this requirements could be outdated)
+(New libraries are added normally, so these requirements could be outdated)
