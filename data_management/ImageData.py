@@ -20,20 +20,21 @@ class ImageData:
 
     def __init__(self, n_droplets: int, 
                  width_sums: list, height_sums: list, area_sums: list, 
-                 width_bars: dict, height_bars: dict, area_bars: dict, area_interval: int,
+                 width_bars: dict, height_bars: dict, area_bars: dict, area_interval: int, intervals_sum: list,
                  pixel_ratio: float, unit: str, images_added = 1):
 
-        self.n_droplets = [n_droplets, [n_droplets]]
+        self.n_droplets = n_droplets
         self.images_added = images_added
 
-        self.width_sums = [width_sums, [deepcopy(width_sums)]]
-        self.height_sums = [height_sums, [deepcopy(height_sums)]]
-        self.area_sums = [area_sums, [deepcopy(area_sums)]]
+        self.width_sums = width_sums
+        self.height_sums = height_sums
+        self.area_sums = area_sums
 
-        self.width_bars = [width_bars, [deepcopy(width_bars)]]
-        self.height_bars = [height_bars, [deepcopy(height_bars)]]
-        self.area_bars = [area_bars, [deepcopy(area_bars)]]
-        self.area_interval = [area_interval, [area_interval]]
+        self.width_bars = width_bars
+        self.height_bars = height_bars
+        self.area_bars = area_bars
+        self.area_interval = area_interval
+        self.intervals_sum = intervals_sum
 
         self.pixel_ratio = pixel_ratio
         self.unit = unit
@@ -77,25 +78,28 @@ class ImageData:
         else:
             total = add(list1[0], list2[0])
 
-        if not self.images_added%ImageData.batch_size:
-            list1[1].append([0])
-
-        if self.images_added == ImageData.batch_size*ImageData.maximum_batches:
+        if self.images_added == ImageData.batch_size*ImageData.max_batches:
             if chosen_instance:
                 total = sub(total, list1[1].pop(0), chosen_interval)
             else:
                 total = sub(total, list1[1].pop(0))
 
-        new_list = []
-        new_list += list1[1]
-        new_list[1][-1] = add(list1[1][-1], list2[1][-1])
+        if not self.images_added%ImageData.batch_size:
+            list1[1].append(list2[0])
+
+        new_list = list1[1]
+        if chosen_instance:
+            new_list[-1] = add(list1[1][-1], list2[1][-1], chosen_interval)
+        else:
+            new_list[-1] = add(list1[1][-1], list2[1][-1])
 
         return [total, new_list]
 
     def __add__(self, other):
-        new_n_droplets = self.manage_addition(self.n_droplets, other.n_droplets, self.images_added, sum_int, sub_int)
+        new_n_droplets = self.manage_addition(self.n_droplets, other.n_droplets, sum_int, sub_int)
 
-        new_area_interval, chosen_instance = choose_interval(self.area_interval, other.area_interval[0])
+        new_area_interval, chosen_instance = choose_interval(self.area_interval, other.area_interval[0], self.images_added)
+        new_intervals_sum = self.manage_addition(self.intervals_sum, other.intervals_sum, sum_int, sub_int)
 
         new_width_bars = self.manage_addition(self.width_bars, other.width_bars, sum_bars, sub_bars)
         new_height_bars = self.manage_addition(self.height_bars, other.height_bars, sum_bars, sub_bars)
@@ -106,14 +110,14 @@ class ImageData:
         new_height_sums =  self.manage_addition(self.height_sums, other.height_sums, sum_sums, sub_sums)
         new_area_sums =  self.manage_addition(self.area_sums, other.area_sums, sum_sums, sub_sums)
 
-        if ImageData.batch_size*ImageData.maximum_batches == self.images_added:
+        if ImageData.batch_size*ImageData.max_batches == self.images_added:
             self.images_added -= ImageData.batch_size
 
         images_added = self.images_added + 1
 
         return ImageData(new_n_droplets, new_width_sums, new_height_sums, new_area_sums, 
-                               new_width_bars, new_height_bars, new_area_bars, 
-                               self.pixel_ratio, self.unit, new_area_interval, images_added)
+                         new_width_bars, new_height_bars, new_area_bars, new_area_interval, new_intervals_sum,
+                         self.pixel_ratio, self.unit, images_added)
 
     def __str__(self):
         return tabulate(tabular_data=

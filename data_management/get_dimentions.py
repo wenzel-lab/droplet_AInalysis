@@ -4,10 +4,10 @@ from math import pi, sqrt
 import torch
 try:
     from ImageData import ImageData
-    from data_tools import sort_and_group
+    from data_tools import sort_and_group, format
 except Exception:
     from data_management.ImageData import ImageData
-    from data_tools import sort_and_group
+    from data_tools import sort_and_group, format
 
 from time import time
 
@@ -46,8 +46,10 @@ def get_dimentions(results, image_path, pixel_ratio, unit, omit_border_droplets)
 
     print(time() - start, "seconds")
 
-    return ImageData(len(widths_vector), width_sums, height_sums, area_sums, 
-                     width_bars, height_bars, area_bars, area_interval,
+    return ImageData(format(len(widths_vector)), 
+                     format(width_sums), format(height_sums), format(area_sums), 
+                     format(width_bars), format(height_bars), format(area_bars), 
+                     format(area_interval), format(area_interval), 
                      pixel_ratio, unit)
 
 if __name__ == "__main__":

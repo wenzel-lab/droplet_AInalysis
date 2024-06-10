@@ -1,3 +1,8 @@
+from copy import deepcopy
+
+def format(element):
+    return [element, [deepcopy(element)]]
+
 def sum_int(a: int, b:int):
     return a + b
 
@@ -41,7 +46,7 @@ def sum_bars(list1: list, list2: list):
             merged_list.append(list1[i])
             i += 1
         elif list1[i][0] == list2[j][0]:
-            merged_list.append([list1[i][0], list1[i][1] + list2[i][1]])
+            merged_list.append([list1[i][0], list1[i][1] + list2[j][1]])
             i += 1
             j += 1
         else:
@@ -67,7 +72,9 @@ def sub_bars(list1, list2):
             result.append(list1[i])
             i += 1
         elif list1[i][0] == list2[j][0]:
-            result.append([list1[i][0], list1[i][1]-list1[j][1]])
+            quantity = list1[i][1]-list2[j][1]
+            if quantity:
+                result.append([list1[i][0], quantity])
             i += 1
             j += 1
         else:
@@ -76,7 +83,6 @@ def sub_bars(list1, list2):
     while i < len(list1):
         result.append(list1[i])
         i += 1
-
     return result
 
 def sum_area_bars(list1: list, list2:list, interval):
@@ -116,16 +122,17 @@ def sub_area_bars(list1, list2, interval):
             result.append(list1[i])
             i += 1
         elif list1[i][0] - interval <= list2[j][0] < list1[i][0] + interval:
-            result.append([list1[i][0], list1[i][1]-list2[j][1]])
+            quantity = list1[i][1]-list2[j][1]
+            if quantity:
+                result.append([list1[i][0], quantity])
             j += 1
-            j += 1
+            i += 1
         else:
             j += 1
 
     while i < len(list1):
         result.append(list1[i])
         i += 1
-
     return result
 
 def sort_and_group(list1: list):
