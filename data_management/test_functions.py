@@ -49,7 +49,7 @@ def show_graphics(image_data):
     unit = image_data.unit
     n = image_data.n_droplets[0]
 
-    fig, axs = plot.subplots(1, 3, figsize=(15, 5))
+    fig, axs = plot.subplots(1, 3, figsize=(15, 5), num=str(n) + " Droplets")
     plot_bar_with_normal(axs[0],width_bars, width_mean, width_std, 'Width', unit, n)
     plot_bar_with_normal(axs[1], height_bars, height_mean, height_std, 'Height', unit, n)
     plot_bar_with_normal(axs[2], area_bars, area_mean, area_std, 'Area', unit, n, area_interval)
@@ -79,4 +79,3 @@ elif decision == "3":
     image_info = get_dimentions(results, image_path, PIXEL_RATIO, UNIT, OMIT_BORDER_DROPLETS)
     print(image_info)
     droplet_cutouts = get_boxes(results, image_path, TEST_IMAGE, TEST_WEIGHT, SAVE, OMIT_BORDER_DROPLETS)
-
