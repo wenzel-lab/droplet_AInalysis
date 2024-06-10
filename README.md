@@ -28,7 +28,7 @@ The first graph is from the first image, the second graph is from the second ima
 # MATH AND PROCESSING
 The standard deviation of the parameters, such as width, height and area is calculated with the incremental formula of the standard deviation:
 
-![Incremental stdd formula](readme_img/incremental_stdd.png)$
+![Incremental stdd formula](readme_img/incremental_stdd.png)
 
 This formula allows to "add" the standard deviation of two or more images together, without having to store all of the individual dimentions of droplets. Basicly, after calculating the standard deviation once, the values from which it was calculated can be forgotten, since they won't be necessary when we want to calculate the new standard deviation from adding another set of droplets.
 
