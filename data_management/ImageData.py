@@ -1,0 +1,124 @@
+from copy import deepcopy
+from math import pi, sqrt
+from tabulate import tabulate
+try:
+    from data_tools import (sum_int, sub_int,
+                            sum_sums, sub_sums,
+                            sum_bars, sub_bars, 
+                            sum_area_bars, sub_area_bars,
+                            choose_interval, sort_and_group)
+except Exception:
+    from data_management.data_tools import (sum_int, sub_int,
+                                            sum_sums, sub_sums,
+                                            sum_bars, sub_bars, 
+                                            sum_area_bars, sub_area_bars,
+                                            choose_interval, sort_and_group)
+
+class ImageData:
+    batch_size = 60
+    max_batches = 5
+
+    def __init__(self, n_droplets: int, 
+                 width_sums: list, height_sums: list, area_sums: list, 
+                 width_bars: dict, height_bars: dict, area_bars: dict, area_interval: int,
+                 pixel_ratio: float, unit: str, images_added = 1):
+
+        self.n_droplets = [n_droplets, [n_droplets]]
+        self.images_added = images_added
+
+        self.width_sums = [width_sums, [deepcopy(width_sums)]]
+        self.height_sums = [height_sums, [deepcopy(height_sums)]]
+        self.area_sums = [area_sums, [deepcopy(area_sums)]]
+
+        self.width_bars = [width_bars, [deepcopy(width_bars)]]
+        self.height_bars = [height_bars, [deepcopy(height_bars)]]
+        self.area_bars = [area_bars, [deepcopy(area_bars)]]
+        self.area_interval = [area_interval, [area_interval]]
+
+        self.pixel_ratio = pixel_ratio
+        self.unit = unit
+
+        self._width_distribution = ["Width", 0, 1, self.unit, False] # [name, mean, stdd, unit, Calculated]
+        self._height_distribution = ["Height", 0, 1, self.unit, False]
+        self._area_distribution = ["Area", 0, 1, self.unit + "²", False]
+
+    def _calculate_distribution(self, sums, distribution, rounding):
+        calculated = distribution[4]
+        if not calculated:
+            distribution[4] = True
+
+            mean = sums[0][0] / self.n_droplets[0] if self.n_droplets[0] else 0
+            variance = sums[0][1] / self.n_droplets[0] - mean**2 if self.n_droplets[0] else 1
+
+            distribution[1] = round(float(mean * self.pixel_ratio), rounding)
+            distribution[2] = round(sqrt(variance) * self.pixel_ratio, rounding)
+        return distribution
+
+    @property
+    def width_distribution(self):
+        return self._calculate_distribution(self.width_sums, self._width_distribution, 2)
+
+    @property
+    def height_distribution(self):
+        return self._calculate_distribution(self.height_sums, self._height_distribution, 2)
+
+    @property
+    def area_distribution(self):
+        return self._calculate_distribution(self.area_sums, self._area_distribution, 2)
+    
+    def forget(self):
+        pass
+
+    def manage_addition(self, list1, list2, add, sub, chosen_interval = 0, chosen_instance = ""):
+        if chosen_instance == "self":
+            total = add(list1[0], list2[0], chosen_interval)
+        elif chosen_instance == "other":
+            total = add(list2[0], list1[0], chosen_interval)
+        else:
+            total = add(list1[0], list2[0])
+
+        if not self.images_added%ImageData.batch_size:
+            list1[1].append([0])
+
+        if self.images_added == ImageData.batch_size*ImageData.maximum_batches:
+            if chosen_instance:
+                total = sub(total, list1[1].pop(0), chosen_interval)
+            else:
+                total = sub(total, list1[1].pop(0))
+
+        new_list = []
+        new_list += list1[1]
+        new_list[1][-1] = add(list1[1][-1], list2[1][-1])
+
+        return [total, new_list]
+
+    def __add__(self, other):
+        new_n_droplets = self.manage_addition(self.n_droplets, other.n_droplets, self.images_added, sum_int, sub_int)
+
+        new_area_interval, chosen_instance = choose_interval(self.area_interval, other.area_interval[0])
+
+        new_width_bars = self.manage_addition(self.width_bars, other.width_bars, sum_bars, sub_bars)
+        new_height_bars = self.manage_addition(self.height_bars, other.height_bars, sum_bars, sub_bars)
+        new_area_bars = self.manage_addition(self.area_bars, other.area_bars, sum_area_bars, sub_area_bars, 
+                                             new_area_interval[0], chosen_instance)
+
+        new_width_sums = self.manage_addition(self.width_sums, other.width_sums, sum_sums, sub_sums)
+        new_height_sums =  self.manage_addition(self.height_sums, other.height_sums, sum_sums, sub_sums)
+        new_area_sums =  self.manage_addition(self.area_sums, other.area_sums, sum_sums, sub_sums)
+
+        if ImageData.batch_size*ImageData.maximum_batches == self.images_added:
+            self.images_added -= ImageData.batch_size
+
+        images_added = self.images_added + 1
+
+        return ImageData(new_n_droplets, new_width_sums, new_height_sums, new_area_sums, 
+                               new_width_bars, new_height_bars, new_area_bars, 
+                               self.pixel_ratio, self.unit, new_area_interval, images_added)
+
+    def __str__(self):
+        return tabulate(tabular_data=
+                        [self.width_distribution[:4], 
+                         self.height_distribution[:4], 
+                         self.area_distribution[:4]], 
+                        headers=[str(self.n_droplets[0]) + " Droplets", "Mean", "Std_dev", "Unit"], 
+                        tablefmt="pretty")

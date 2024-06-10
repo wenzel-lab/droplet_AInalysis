@@ -11,11 +11,11 @@ To illustrate, in green the real area that is calculated, in red the error area 
 
 Change the values in **PARAMETERS.py** in order to change the image that is analized, the weights used, wether the result is saved in /saved_results, etc.
 
-Currently the best weight is **best_82.pt**. This one gives better sizes for the boxes and it detects more droplets.
+Currently the best weight is **best_9.pt**. This one gives better sizes for the boxes and it detects more droplets.
 
-## Some Results with **best_82.pt**
-![Droplet error area illustration](saved_results/snapshot_45_82.jpg)
-![Droplet error area illustration](saved_results/snapshot_22_82.jpg)
+## Some Results with **best_9.pt**
+![Droplet error area illustration](saved_results/snapshot_45_9.jpg)
+![Droplet error area illustration](saved_results/snapshot_22_9.jpg)
 
 The standard deviation of the parameters, such as width, height and area is calculated with this incremental formula:
 

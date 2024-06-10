@@ -1,12 +1,9 @@
 import cv2
-from threading import Thread, Lock, Event
+from threading import Thread, Event
 from queue import Queue
 
-from main_flow_functions import set_up, waiting_screen
-from data_management.get_dimentions import get_dimentions
-from data_management.get_boxes import get_boxes
-from PARAMETERS import (PIXEL_RATIO, UNIT, IMGSZ, CONFIDENCE, 
-                        MAX_DETECT, OMIT_BORDER_DROPLETS)
+from main_flow_functions import (set_up, waiting_screen, manage_inputs,
+                                 predict_v1, show_data)
 
 
 model_queue = Queue()
@@ -22,3 +19,14 @@ waiting_screen_thread.join()
 set_up_thread.join()
 
 model = model_queue.get()
+image_data = model_queue.get() # empty instance of ImageParameters
+
+events = {"pause": Event(), 
+          "stop": Event(), 
+          "forget": Event(), 
+          "forgotten": Event(),
+          "data_updated": Event()}
+
+input_managing_thread = Thread(target=manage_inputs, args=(events,))
+main_thread = Thread(target = predict_v1, args=(model, image_data, events))
+show_data_thread = Thread(target=show_data, args=(image_data, events))

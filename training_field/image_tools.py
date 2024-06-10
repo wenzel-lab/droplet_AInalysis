@@ -50,6 +50,33 @@ def crop(image, size: int):
     bottom = (current_height + size) / 2
     return image.crop((left, top, right, bottom))
 
+def color_filters(image):
+    width, height = image.size
+    pixels_RGBA = image.getdata()
+
+    new_data = []
+    apply = choices(["blue", "green", "both", ""], weights=[0.1, 0.1, 0.1, 0.7], k=1)[0]
+
+    y = 0
+    while apply and y < height:
+        for x in range(width):
+            r, g, b, a = pixels_RGBA[y * width + x]
+
+            if apply == "blue":
+                new_data.append((b, g, r, a))
+            if apply == "green":
+                new_data.append((g, r, b, a))
+            if apply == "both":
+                new_data.append((b, r, r, a))
+        y += 1
+    new_image = Image.new("RGBA", (width, height))
+    new_image.putdata(new_data)
+
+    if apply:
+        return new_image
+    else:
+        return image
+
 def transparency(image):
     start = choice(["left", "right", "top", "bottom"])
     width, height = image.size
