@@ -14,12 +14,14 @@ Change the values in **PARAMETERS.py** in order to change the image that is anal
 Currently the best weight is **best_9.pt**. This one gives better sizes for the boxes and it detects more droplets.
 
 ## Some Results with **best_9.pt**
-<img src="saved_results/snapshot_45_9.jpg" alt="Texto alternativo" style="width: 450px; height: auto;">
-<img src="saved_results/snapshot_22_9.jpg" alt="Texto alternativo" style="width: 450px; height: auto;">
+The first graph is from the first image, the second graph is from the second image and the third graph is from the data of both images combined.
 
-<img src="readme_img/45_graphs.png" alt="Texto alternativo" style="width:450px; height: auto;">
-<img src="readme_img/22_graphs.png" alt="Texto alternativo" style="width: 450px; height: auto;">
-<img src="readme_img/45+22_graphs.png" alt="Texto alternativo" style="width: 450px; height: auto;">
+<img src="saved_results/snapshot_45_9.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
+<img src="saved_results/snapshot_22_9.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
+
+<img src="readme_img/45_graphs.png" alt="Texto alternativo" style="width:700px; height: auto;">
+<img src="readme_img/22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
+<img src="readme_img/45+22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
 
 </br>
 
