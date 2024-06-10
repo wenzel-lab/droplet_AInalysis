@@ -15,9 +15,13 @@ Currently the best weight is **best_9.pt**. This one gives better sizes for the 
 
 ## Some Results with **best_9.pt**
 <img src="saved_results/snapshot_45_9.jpg" alt="Texto alternativo" style="width: 500px; height: auto;">
+<img src="saved_results/snapshot_22_9.jpg" alt="Texto alternativo" style="width: 500px; height: auto;">
 
-![Droplet error area illustration](saved_results/snapshot_45_9.jpg)
-![Droplet error area illustration](saved_results/snapshot_22_9.jpg)
+<img src="readme_img/45_graphs.png" alt="Texto alternativo" style="width: 500px; height: auto;">
+<img src="readme_img/22_graphs.png" alt="Texto alternativo" style="width: 500px; height: auto;">
+<img src="readme_img/45+22_graphs.png" alt="Texto alternativo" style="width: 500px; height: auto;">
+
+
 
 The standard deviation of the parameters, such as width, height and area is calculated with this incremental formula:
 
