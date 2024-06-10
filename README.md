@@ -14,20 +14,28 @@ Change the values in **PARAMETERS.py** in order to change the image that is anal
 Currently the best weight is **best_9.pt**. This one gives better sizes for the boxes and it detects more droplets.
 
 ## Some Results with **best_9.pt**
-<img src="saved_results/snapshot_45_9.jpg" alt="Texto alternativo" style="width: 500px; height: auto;">
-<img src="saved_results/snapshot_22_9.jpg" alt="Texto alternativo" style="width: 500px; height: auto;">
+<img src="saved_results/snapshot_45_9.jpg" alt="Texto alternativo" style="width: 450px; height: auto;">
+<img src="saved_results/snapshot_22_9.jpg" alt="Texto alternativo" style="width: 450px; height: auto;">
 
-<img src="readme_img/45_graphs.png" alt="Texto alternativo" style="width: 500px; height: auto;">
-<img src="readme_img/22_graphs.png" alt="Texto alternativo" style="width: 500px; height: auto;">
-<img src="readme_img/45+22_graphs.png" alt="Texto alternativo" style="width: 500px; height: auto;">
+<img src="readme_img/45_graphs.png" alt="Texto alternativo" style="width:450px; height: auto;">
+<img src="readme_img/22_graphs.png" alt="Texto alternativo" style="width: 450px; height: auto;">
+<img src="readme_img/45+22_graphs.png" alt="Texto alternativo" style="width: 450px; height: auto;">
 
+</br>
 
+# MATH AND PROCESSING
+The standard deviation of the parameters, such as width, height and area is calculated with the incremental formula of the standard deviation:
 
-The standard deviation of the parameters, such as width, height and area is calculated with this incremental formula:
+![Incremental stdd formula](readme_img/incremental_stdd.png)$
 
-![Incremental stdd formula](readme_img/incremental_stdd.png)
+This formula allows to "add" the standard deviation of two or more images together, without having to store all of the individual dimentions of droplets. Basicly, after calculating the standard deviation once, the values from which it was calculated can be forgotten, since they won't be necessary when we want to calculate the new standard deviation from adding another set of droplets.
 
-This formula allows to "add" the standard deviation of two or more images together, without having to store all of the dimentions of droplets. Basicly, after calculating the standard deviation once, the values from which it was calculated can be forgotten, since they won't be necessary when we want to calculate the new standard deviation from adding another set of droplets. 
+All data colected from the model's prediction is stored in an instance of `ImageData`. This instances can be added with each other easily. By doing `image_data_combined  = image_data1 + image_data2` you will get a new instance of `ImageData`. This instance will have as attributes: the new mean given by considering the two images, as well as the new standard deviation, the new data for making the graphs and the new total ammount of droplets.
+
+The way this data is stored isn't stray forward. To allow to forget images after a given time, the data is stored in batches of a given size. These batches can not be more numerous than the defined maximum ammount of batches. To better understand an example, if we have added 20 images into an instance of `ImageData`, which has a batch size of 10 and a maximum ammount of batches of 2. The instance would be storing the maximum ammount of data permited. So, the current mean value of the width is all of the widths from all of the images added up, divided by the ammount of droplets from the 20 images. But if we add another image, the instance would forget the first batch, since its maximum ammount of batches has been surpassed. Consequently, the instance would "forget" the first ten images and would consider only the previous last ten images plus the newly added image.
+
+Currently the batches are configured to be of size 60 and to not surpass a quantity of 5. If we assume a refresh rate of 60 frames per second, this would mean storing the data of the previous five seconds. Therfore, when 5 seconds are surpassed, the first second of data would be forgotten. 
+
 
 # THE TRAINING FIELD
 The weights are created in the training_field directory with the **train.py** file. This training is configured to use a nvidia graphics card with the NVIDIA CUDA toolkit. By doing this, the processing occurs in the GPU. This greatly improves the speed in which the training is done, but requires to download nvidia CUDA, nvidia CUDNN and to get a compatible version of PYTorch.
@@ -50,4 +58,6 @@ The droplets and backgrounds used are choosen randomly for every training image.
 The background image is cropped to 640 pixels x 640 pixels when generating training images. The original size of 1024*704 became to heavy for the training, making it spend twice the memory and taking twice the time. 640 x 640 was a good medium point to train faster. So, to be clear. This change of size DOES NOT impact the precission of the final product, but it DOES increase the speed of the training.
 
 # Requirements
-The libraries needed to run main.py are **ultralytics**, **pillow**, **opencv-python** and **tabulate**. These can be automaticly installed by running **packages.py**.
+The libraries needed to run main.py are **ultralytics**, **pillow**, **opencv-python** and **tabulate**. These can be automaticly installed by running **packages.py**. 
+
+(New libraries are added normally, so this requirements could be outdated)
