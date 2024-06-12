@@ -15,16 +15,13 @@ def sum_sums(list1: list, list2: list):
 def sub_sums(list1: list, list2: list):
     return [w1 - w2 for w1, w2 in zip(list1, list2)]
 
-def choose_interval(list1, second_interval, i):
-    batch_size = 60
-    maximum_batches = 5
-
+def choose_interval(list1, second_interval, i, batch_size, max_batches):
     chosen_option = "self"
 
     if not i%batch_size:
-        list1[1].append([0])
+        list1[1].append(0)
 
-    if i == batch_size*maximum_batches:
+    if i == batch_size*max_batches:
         list1[1].pop(0)
         max_interval = max(list1[1])
         list1[0] = max_interval
@@ -140,9 +137,9 @@ def sort_and_group(list1: list):
     if not len(list1):
         return []
     list1.sort()
-    list2 = [[list1.pop(0), 1]]
-    anterior = list1[0]
-    for value in list1[1:]:
+    anterior = list1.pop(0)
+    list2 = [[anterior, 1]]
+    for value in list1:
         if value != anterior:
             list2.append([value, 1])
             anterior = value

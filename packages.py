@@ -5,7 +5,6 @@ from sys import executable
 
 packages = [
     "ultralytics",
-    "pillow",
     "opencv-python",
     "tabulate"
 ]

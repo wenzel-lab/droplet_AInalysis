@@ -1,10 +1,9 @@
-from os.path import join
-
+IMGSZ = 1024 # size of the image that is analysed
+CONFIDENCE = 0.7 # minimum confidence that a prediction needs to be counted as a droplet
+MAX_DETECT = 500 # maximum amount of droplets that can be detected in the image
 PIXEL_RATIO = 1
-UNIT = "pixel"
-IMGSZ = 1024
-WEIGHT = join("weights","best_9.pt")
-CONFIDENCE = 0.7
-MAX_DETECT = 500
-AREA_INTERVAL = 80
+UNIT = "px"
+TEST_IMAGE = "snapshot_56.jpg"
+WEIGHT = "best_9.pt"
 OMIT_BORDER_DROPLETS = True
+SAVE = True # only for get_boxes.py
