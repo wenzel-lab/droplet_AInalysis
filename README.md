@@ -1,7 +1,7 @@
 # Introduction
 This repository implements machine learning to detect droplets on images. After the detection is performed, the data of the dimentions of this images is calculated and shown.
 
-# MAIN FUNCTIONALITIES
+# Main functionalities
 There are two programms in this repository that a normal user would like to run: **test_functions.py** and **main.py**. 
 
 ## test_functions.py
