@@ -4,13 +4,11 @@ try:
     from data_tools import (sum_int, sub_int,
                             sum_sums, sub_sums,
                             sum_bars, sub_bars, 
-                            sum_area_bars, sub_area_bars,
                             choose_interval)
 except Exception:
     from data_management.data_tools import (sum_int, sub_int,
                                             sum_sums, sub_sums,
                                             sum_bars, sub_bars, 
-                                            sum_area_bars, sub_area_bars,
                                             choose_interval)
 
 class ImageData:
@@ -99,8 +97,7 @@ class ImageData:
 
         new_width_bars = self._manage_addition(self.width_bars, other.width_bars, sum_bars, sub_bars)
         new_height_bars = self._manage_addition(self.height_bars, other.height_bars, sum_bars, sub_bars)
-        new_area_bars = self._manage_addition(self.area_bars, other.area_bars, sum_area_bars, sub_area_bars, 
-                                             new_area_interval[0], chosen_instance)
+        new_area_bars = self._manage_addition(self.area_bars, other.area_bars, sum_bars, sub_bars)
 
         new_width_sums = self._manage_addition(self.width_sums, other.width_sums, sum_sums, sub_sums)
         new_height_sums =  self._manage_addition(self.height_sums, other.height_sums, sum_sums, sub_sums)

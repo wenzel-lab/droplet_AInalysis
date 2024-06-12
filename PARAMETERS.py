@@ -5,5 +5,4 @@ PIXEL_RATIO = 1
 UNIT = "px"
 TEST_IMAGE = "snapshot_56.jpg"
 WEIGHT = "best_9.pt"
-OMIT_BORDER_DROPLETS = True
-SAVE = True # only for get_boxes.py
+SAVE = False # for get_boxes.py

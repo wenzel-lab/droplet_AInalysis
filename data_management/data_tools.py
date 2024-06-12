@@ -82,56 +82,6 @@ def sub_bars(list1, list2):
         i += 1
     return result
 
-def sum_area_bars(list1: list, list2:list, interval):
-    merged_list = []
-    i = j = 0
-
-    interval *= 0.5
-    while i < len(list1) and j < len(list2):
-        if list1[i][0] + interval < list2[j][0]:
-            merged_list.append(list1[i])
-            i += 1
-        elif list1[i][0] - interval <= list2[j][0] < list1[i][0] + interval:
-            merged_list.append([list1[i][0], list1[i][1] + list2[j][1]])
-            i += 1
-            j += 1
-        else:
-            merged_list.append(list2[j])
-            j += 1
-    
-    while i < len(list1):
-        merged_list.append(list1[i])
-        i += 1
-
-    while j < len(list2):
-        merged_list.append(list2[j])
-        j += 1
-
-    return merged_list
-
-def sub_area_bars(list1, list2, interval):
-    result = []
-    i = j = 0
-
-    interval *= 0.5
-    while i < len(list1) and j < len(list2):
-        if list1[i][0] + interval < list2[j][0]:
-            result.append(list1[i])
-            i += 1
-        elif list1[i][0] - interval <= list2[j][0] < list1[i][0] + interval:
-            quantity = list1[i][1]-list2[j][1]
-            if quantity:
-                result.append([list1[i][0], quantity])
-            j += 1
-            i += 1
-        else:
-            j += 1
-
-    while i < len(list1):
-        result.append(list1[i])
-        i += 1
-    return result
-
 def sort_and_group(list1: list):
     # sorts and groups
     if not len(list1):
