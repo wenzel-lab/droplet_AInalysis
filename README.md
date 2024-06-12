@@ -1,19 +1,19 @@
+# Introduction
+This repository implements machine learning to detect droplets on images. After the detection is performed, the data of the dimentions of this images is calculated and shown.
+
 # MAIN FUNCTIONALITIES
-To predict the droplets in an image, go to the data_management directory an execute "python **test_functions.py**" on the terminal. This will give the option to get the dimentions and to show the bounding boxes of the droplets given by the detection model.
+There are two programms in this repository that any user would like to run: **test_functions.py** and **main.py**. 
 
-The droplets detected at the borders of the image are not counted. The reason for this is that most of them do not appear whole. Since their actual size is unknown, their inclusion would drift the mean value of the dimentions away from the real value.
+## test_functions.py
+With this programm you can use the prediction model on a single image. You may choose to use the results of the prediction to visualize the detection, to show the distribution of the detected droplets' dimentions or both.
 
-The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axis are paralel to the x and y axis from the main picture.
+## main.py
+This programm starts the webcam of your device and takes pictures periodicly. With each picture, the programm runs a prediction of the droplets in it and then collects the data of the dimentions of these. The data of the dimentions is then constantly used to update the visual interface of the density distribution of width, height and area.
 
-To illustrate, in green the real area that is calculated, in red the error area that is calculated and in yellow the area that is missed by the calculation.
+### Change the parameters in these programms
+Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the unit of meassurement, the weight used in the model, the image that is analized in **test_functions.py**, wether the result is saved in /saved_results, among other things. (in the current version some of the parameters, such as IMGSZ, are hardcoded).
 
-![Droplet error area illustration](readme_img/area_illustration.png)
-
-Change the values in **PARAMETERS.py** in order to change the image that is analized, the weights used, wether the result is saved in /saved_results, etc.
-
-Currently the best weight is **best_9.pt**. This one gives better sizes for the boxes and it detects more droplets.
-
-## Some Results with **best_9.pt**
+## Some Results
 The first graph is from the first image, the second graph is from the second image and the third graph is from the data of both images combined.
 
 <img src="saved_results/snapshot_45_9.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
@@ -38,6 +38,13 @@ The way this data is stored isn't straight forward. To allow to forget images af
 
 Currently the batches are configured to be of size 60 and to not surpass a quantity of 5. If we assume a refresh rate of 60 frames per second, this would mean storing the data of the previous five seconds. Therefore, when 5 seconds are surpassed, the first second of data is forgotten. 
 
+The droplets detected at the borders of the image are not counted. The reason for this is that most of them do not appear whole. Since their actual size is unknown, their inclusion would drift the mean value of the dimentions away from the real value.
+
+The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axis are paralel to the x and y axis from the main picture.
+
+To illustrate, in green the real area that is calculated, in red the error area that is calculated and in yellow the area that is missed by the calculation.
+
+![Droplet error area illustration](readme_img/area_illustration.png)
 
 # THE TRAINING FIELD
 The weights are created in the training_field directory with the **train.py** file. This training is configured to use a nvidia graphics card with the NVIDIA CUDA toolkit. By doing this, the processing occurs in the GPU. This greatly improves the speed in which the training is done, but requires to download nvidia CUDA, nvidia CUDNN and to get a compatible version of PYTorch.
