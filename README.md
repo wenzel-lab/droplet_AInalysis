@@ -11,7 +11,7 @@ With this programm you can use the prediction model on a single image. You may c
 This programm starts the webcam of your device and takes pictures periodicly. With each picture, the programm runs a prediction of the droplets in it and then collects the data of the dimentions of these. The data of the dimentions is then constantly used to update the visual interface of the density distribution of width, height and area.
 
 ### Change the parameters in these programms
-Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the unit of meassurement, the weight used in the model, the image that is analized in **test_functions.py**, wether the result is saved in /saved_results, among other things. (in the current version some of the parameters, such as IMGSZ, are hardcoded).
+Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the unit of meassurement, the weight used in the model, the image that is analized in **test_functions.py**, wether the result is saved in /saved_results, among other things.
 
 ## Some Results
 [More results found here](https://github.com/wenzel-lab/droplet_AInalysis/tree/main/saved_results)
