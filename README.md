@@ -27,8 +27,8 @@ Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the 
 ### snaphsot 45 + snapshot 22
 
 <img src="readme_img/45+22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
-
 </br>
+
 # MATHS AND PROCESSING
 
 ### Discarded droplets
