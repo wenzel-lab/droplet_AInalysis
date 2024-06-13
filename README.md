@@ -16,18 +16,39 @@ Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the 
 ## Some Results
 [More results found here](https://github.com/wenzel-lab/droplet_AInalysis/tree/main/saved_results)
 
-<img src="saved_results/snapshot_45_9.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
+### snapshot 45
+<img src="saved_results/snapshot_45_10.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
 <img src="readme_img/45_graphs.png" alt="Texto alternativo" style="width:700px; height: auto;">
-<img src="saved_results/snapshot_22_9.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
+
+### snapshot 22
+<img src="saved_results/snapshot_22_10.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
 <img src="readme_img/22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
 
-Data of both images combined:
+### snaphsot 45 + snapshot 22
 
 <img src="readme_img/45+22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
 
 </br>
 
-# MATH AND PROCESSING
+# MATHS AND PROCESSING
+
+### Discarded droplets
+In the first image seen above, one might think that all of the droplets at the borders of the image are wrongfully not being detected. However this is not the case. The model does detect them, but they are not counted. The reason for this is that most of the droplets at the borders do not appear whole. Since their actual size is unknown, their inclusion would drift the mean and standard deviation of the dimentions away from the real values. 
+
+The following image is the same image from above, but it does count the droplets in the borders. The problem can inmediatly be seen.
+
+<img src="readme_img/45_border.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
+<!-- <img src="readme_img/45_border_graphs.png" alt="Texto alternativo" style="width:700px; height: auto;"> -->
+
+### Area of droplets
+The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axis are paralel to the x and y axis from the main picture.
+
+To illustrate, in <span style="color: lightgreen;">green</span> the real area that is calculated, in <span style="color: yellow;">yellow</span> the area that is missed by te calculation and in <span style="color: red;">red</span> the error area that is calculated.
+
+![Droplet error area illustration](readme_img/area_illustration.png)
+
+### How data is added and an explanation of batches
+
 The standard deviation of the parameters, such as width, height and area is calculated with the incremental formula of the standard deviation:
 
 ![Incremental stdd formula](readme_img/incremental_stdd.png)
@@ -39,14 +60,6 @@ All data colected from the model's prediction is stored in an instance of `Image
 The way this data is stored isn't straight forward. To allow to forget images after a given time, the data is stored in batches of a given size. These batches can not be more numerous than the defined maximum ammount of batches. An example of this: if we have added 20 images into an instance of `ImageData`, which has a batch size of 10 and a maximum ammount of batches of 2. The instance would be storing the maximum ammount of data permited. So, the current mean value of the width is all of the widths from all of the images added up, divided by the ammount of droplets from the 20 images. But if we add another image, the instance would forget the first batch, since its maximum ammount of batches has been surpassed. Consequently, the instance would "forget" the first ten images and would consider only the previous last ten images plus the newly added image.
 
 Currently the batches are configured to be of size 60 and to not surpass a quantity of 5. If we assume a refresh rate of 60 frames per second, this would mean storing the data of the previous five seconds. Therefore, when 5 seconds are surpassed, the first second of data is forgotten. 
-
-The droplets detected at the borders of the image are not counted. The reason for this is that most of them do not appear whole. Since their actual size is unknown, their inclusion would drift the mean value of the dimentions away from the real value.
-
-The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axis are paralel to the x and y axis from the main picture.
-
-To illustrate, in green the real area that is calculated, in red the error area that is calculated and in yellow the area that is missed by the calculation.
-
-![Droplet error area illustration](readme_img/area_illustration.png)
 
 # THE TRAINING FIELD
 The weights are created in the training_field directory with the **train.py** file. This training is configured to use a nvidia graphics card with the NVIDIA CUDA toolkit. By doing this, the processing occurs in the GPU. This greatly improves the speed in which the training is done, but requires to download nvidia CUDA, nvidia CUDNN and to get a compatible version of PYTorch.

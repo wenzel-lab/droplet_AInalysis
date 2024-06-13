@@ -1,3 +1,4 @@
+from math import pi, sqrt
 from os.path import join
 from data_management.get_dimentions import get_dimentions
 from data_management.get_boxes import get_boxes
@@ -10,6 +11,17 @@ import matplotlib.pyplot as plot
 import cv2
 
 
+def group_in_intervals(bars, interval):
+    new_list = []
+    for messure, q in bars:
+        new_messure = round(messure/interval)*interval
+        if not len(new_list) or new_messure > new_list[-1][0]:
+            new_list.append([new_messure, q])
+        else:
+            new_list[-1][1] += q
+    return new_list
+
+constant = 1/sqrt(2*pi)
 def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, pixel_ratio = 1, interval = 1):
     categories = []
     quantities = []
@@ -18,14 +30,16 @@ def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, pixel_ratio = 1, i
     for key, value in bars:
         categories.append(key * pixel_ratio)
         quantities.append(value)
-    height = n * interval * pixel_ratio
 
     ax.bar(categories, quantities, width = interval * pixel_ratio * 0.8, color='skyblue')
-
     x = np.linspace(max(mean - 3.5*std, 0), mean + 3.5*std, 100)
     y = stats.norm.pdf(x, mean, std)
+    height = n * interval * pixel_ratio
     ax.plot(x, y*height, color='darkblue')
-
+    if len(categories) and std!=0:
+        ax.set_ylim(0, max(quantities + [height*(constant)/std])*1.1)
+    else:
+        ax.set_ylim(0, 1)
     squared = "" if title != "Area" else "²"
 
     ax.set_title(title + " (" + unit + squared + ")")
@@ -53,6 +67,7 @@ def show_graphics(image_data):
     area_mean = image_data.area_distribution[1]
     area_std = image_data.area_distribution[2]
     area_interval = image_data.area_interval[0]
+    area_bars = group_in_intervals(area_bars, area_interval)
 
     unit = image_data.unit
     n = image_data.n_droplets[0]
@@ -72,10 +87,13 @@ if decision in "123":
     model = Yolo(join("weights", WEIGHT))
 
 if decision == "1":
-    results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
-    image_info_1 = get_dimentions(results, PIXEL_RATIO, UNIT)
-    print(image_info_1)
-    show_graphics(image_info_1)
+    results = model.predict(join("testing_imgs", "snapshot_45.jpg"), imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
+    image_data_1 = get_dimentions(results, PIXEL_RATIO, UNIT)
+    results = model.predict(join("testing_imgs", "snapshot_22.jpg"), imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
+    image_data_2 = get_dimentions(results, PIXEL_RATIO, UNIT)
+    new_data = image_data_1 + image_data_2
+    print(new_data)
+    show_graphics(new_data)
 
 elif decision == "2":
     results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
