@@ -89,11 +89,7 @@ if decision in "123":
 if decision == "1":
     results = model.predict(join("testing_imgs", "snapshot_45.jpg"), imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
     image_data_1 = get_dimentions(results, PIXEL_RATIO, UNIT)
-    results = model.predict(join("testing_imgs", "snapshot_22.jpg"), imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
-    image_data_2 = get_dimentions(results, PIXEL_RATIO, UNIT)
-    new_data = image_data_1 + image_data_2
-    print(new_data)
-    show_graphics(new_data)
+    show_graphics(image_data_1)
 
 elif decision == "2":
     results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)

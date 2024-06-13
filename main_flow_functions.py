@@ -2,7 +2,7 @@ from time import sleep, time
 from copy import deepcopy
 import cv2
 from os.path import join
-from PARAMETERS import (PIXEL_RATIO, UNIT, IMGSZ, CONFIDENCE, 
+from PARAMETERS import (PIXEL_RATIO, UNIT, IMGSZ, CONFIDENCE, WEIGHT,  
                         MAX_DETECT)
 from data_management.get_dimentions import get_dimentions
 import queue
@@ -18,7 +18,6 @@ def waiting_screen(evento):
 
 def set_up(evento, queue):
     from os.path import join
-    from PARAMETERS import WEIGHT, IMGSZ, MAX_DETECT
 
     from ultralytics import YOLO as Yolo
     model = Yolo(WEIGHT)
