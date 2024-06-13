@@ -42,7 +42,7 @@ The following image is the same image from above, but it does count the droplets
 ### Area of droplets
 The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axis are paralel to the x and y axis from the main picture.
 
-To illustrate, in <span style="color: lightgreen;">green</span> the real area that is calculated, in <span style="color: yellow;">yellow</span> the area that is missed by te calculation and in <span style="color: red;">red</span> the error area that is calculated.
+To illustrate, in green the real area that is calculated, in yellow the area that is missed by te calculation and in red the error area that is calculated.
 
 ![Droplet error area illustration](readme_img/area_illustration.png)
 
