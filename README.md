@@ -14,7 +14,7 @@ This programm starts the webcam of your device and takes pictures periodicly. Wi
 Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the unit of meassurement, the weight used in the model, the image that is analized in **test_functions.py**, wether the result is saved in /saved_results, among other things. (in the current version some of the parameters, such as IMGSZ, are hardcoded).
 
 ## Some Results
-The first graph is from the first image, the second graph is from the second image and the third graph is from the data of both images combined.
+The first graph is from the first image, the second graph is from the second image and the third graph is from the data of both images combined. [More results found here](https://github.com/wenzel-lab/droplet_AInalysis/tree/main/saved_results)
 
 <img src="saved_results/snapshot_45_9.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
 <img src="saved_results/snapshot_22_9.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
