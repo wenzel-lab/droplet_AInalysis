@@ -33,7 +33,7 @@ Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the 
 # MATHS AND PROCESSING
 
 ### Discarded droplets
-In the first image seen above, one might think that all of the droplets at the borders of the image are wrongfully not being detected. However this is not the case. The model does detect them, but they are not counted. The reason for this is that most of the droplets at the borders do not appear whole. Since their actual size is unknown, their inclusion would drift the mean and standard deviation of the dimentions away from the real values. 
+In the first image seen above, one might think that all of the droplets at the borders are wrongfully not being detected. However this is not the case. The model does detect them, but they are not counted. The reason for this is that most of the droplets at the borders do not appear whole. Since their actual size is unknown, their inclusion would drift the mean and standard deviation of the dimentions away from the real values. 
 
 The following image is the same image from above, but it does count the droplets in the borders. The problem can inmediatly be seen.
 
