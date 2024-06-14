@@ -16,7 +16,7 @@ This programm starts the webcam of your device and takes pictures periodicly. Wi
 ### Change the parameters in these programms
 Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the unit of meassurement, the weight used in the model, the image that is analized in **test_functions.py**, wether the result is saved in /saved_results, among other things.
 
-## Some Results
+# Some Results
 
 ### snapshot 45
 <img src="imgs/readme_imgs/snapshot_45_10.jpg" alt="snapshot 45" style="width: 600px; height: auto;">
