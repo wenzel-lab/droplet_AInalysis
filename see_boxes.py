@@ -15,17 +15,19 @@ def numerically(string : str):
             number += character
     return int(number)
 
-if not path.exists("results"):
-    mkdir("results")
+if not path.exists(path.join("imgs", "results")):
+    mkdir(path.join("imgs", "results"))
 
 if decision == "2":
-    image_paths = [path.join("real_imgs", f) for f in listdir("real_imgs") if path.isfile(path.join("real_imgs", f))]
+    image_paths = [path.join("imgs", "real_imgs", f) 
+                   for f in listdir(path.join("imgs", "real_imgs")) 
+                   if path.isfile(path.join("imgs", "real_imgs", f))]
 else:
-    image_paths = [path.join("real_imgs", TEST_IMAGE)]
+    image_paths = [path.join("imgs", "real_imgs", TEST_IMAGE)]
 
 for image_path in image_paths:
-    image_name = image_path.split("\\")[1]
-    output_dir = path.join("results", image_name.split(".")[0])
+    image_name = image_path.split("\\")[-1]
+    output_dir = path.join("imgs", "results", image_name.split(".")[0])
     if not path.exists(output_dir):
         mkdir(output_dir)
 

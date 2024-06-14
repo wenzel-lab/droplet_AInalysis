@@ -23,9 +23,8 @@ def get_boxes(results, img, file_name, weight):
                     thickness=1)
 
     cv2.putText(img, weight.split("_")[1][:-3], (7,35), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-    img_path = path.join("results", file_name.split(".")[0], "latest_prediction_" + weight.split("_")[1][:-3] + ".jpg")
+    img_path = path.join("imgs", "results", file_name.split(".")[0], "latest_prediction_" + weight.split("_")[1][:-3] + ".jpg")
     cv2.imwrite(img_path, img)
     return img_path
 
-    return img
     # return droplet_images

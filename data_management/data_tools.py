@@ -82,14 +82,17 @@ def sub_bars(list1, list2):
         i += 1
     return result
 
-def sort_and_group(list1: list):
-    # sorts and groups
+def sort_and_group(list1: list, name):
     if not len(list1):
         return []
     list1.sort()
     anterior = list1.pop(0)
+    if name != "AREAS":
+        anterior = int(anterior)
     list2 = [[anterior, 1]]
     for value in list1:
+        if name != "AREAS":
+            value = int(value)
         if value != anterior:
             list2.append([value, 1])
             anterior = value

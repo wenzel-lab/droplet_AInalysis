@@ -1,8 +1,8 @@
 from threading import Thread, Event
 from queue import Queue
 from copy import deepcopy
-from main_flow_functions import (set_up, waiting_screen, predict)
-from graphics import show_graphics
+from backend import (set_up, waiting_screen, predict)
+from frontend import show_graphics
 from PARAMETERS import PIXEL_RATIO
 
 
@@ -11,7 +11,6 @@ start_event = Event()
 
 waiting_screen_thread = Thread(target=waiting_screen, args=(start_event,))
 set_up_thread = Thread(target=set_up, args=(start_event, model_queue))
-
 waiting_screen_thread.start()
 set_up_thread.start()
 
@@ -33,5 +32,4 @@ prediction_thread.start()
 show_graphics(events, main_queue, PIXEL_RATIO)
 
 prediction_thread.join()
-
 print("Exit sucessfull!")

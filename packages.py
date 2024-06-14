@@ -6,7 +6,8 @@ from sys import executable
 packages = [
     "ultralytics",
     "opencv-python",
-    "tabulate"
+    "tabulate",
+    "imageio"
 ]
 
 def install_packages(packages):
