@@ -35,13 +35,13 @@ Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the 
 ## Discarded droplets
 In the first image seen above, one might think that all of the droplets at the borders are wrongfully not being detected. However this is not the case. The model does detect them, but they are not counted. The reason for this is that most of the droplets at the borders do not appear whole. Since their actual size is unknown, their inclusion would drift the mean and standard deviation of the dimentions away from the real values. 
 
-The following image is the same image from above, but it does count the droplets in the borders. The problem can inmediatly be seen.
+The following image is the same from above, but it does count the droplets in the borders. The problem can inmediatly be seen.
 
 <img src="imgs/readme_imgs/45_border.jpg" alt="45 with borders" style="width: 600px; height: auto;">
 <!-- <img src="readme_img/45_border_graphs.png" alt="Texto alternativo" style="width:700px; height: auto;"> -->
 
 ## Area of droplets
-The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axis are paralel to the x and y axis from the main picture.
+The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axes are paralel to the x and y axes from the main picture.
 
 To illustrate, in green the real area that is calculated, in yellow the area that is missed by te calculation and in red the error area that is calculated.
 
