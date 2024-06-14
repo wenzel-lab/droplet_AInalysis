@@ -116,4 +116,3 @@ def show_graphics(events, main_queue, pixel_ratio):
 
         if updated:
             plot.pause(0.25)
-

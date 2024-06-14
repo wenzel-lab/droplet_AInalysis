@@ -1,7 +1,6 @@
 from time import sleep, time
 from copy import deepcopy
 import cv2
-from os.path import join
 from PARAMETERS import (PIXEL_RATIO, UNIT, IMGSZ, CONFIDENCE, WEIGHT,  
                         MAX_DETECT)
 from data_management.get_dimentions import get_dimentions
@@ -21,7 +20,7 @@ def set_up(evento, queue):
 
     from ultralytics import YOLO as Yolo
     model = Yolo(WEIGHT)
-    results = model.predict(join("testing_imgs","none.jpg"), imgsz=IMGSZ, max_det=MAX_DETECT, verbose=False)
+    results = model.predict(join("real_imgs","none.jpg"), imgsz=IMGSZ, max_det=MAX_DETECT, verbose=False)
     image_data = get_dimentions(results, PIXEL_RATIO, UNIT)
     cap = cv2.VideoCapture(0)
     queue.put(model)

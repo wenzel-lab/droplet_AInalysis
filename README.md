@@ -14,19 +14,17 @@ This programm starts the webcam of your device and takes pictures periodicly. Wi
 Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the unit of meassurement, the weight used in the model, the image that is analized in **test_functions.py**, wether the result is saved in /saved_results, among other things.
 
 ## Some Results
-[More results found here](https://github.com/wenzel-lab/droplet_AInalysis/tree/main/saved_results)
 
 ### snapshot 45
-<img src="saved_results/snapshot_45_10.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
-<img src="readme_img/45_graphs.png" alt="Texto alternativo" style="width:700px; height: auto;">
+<img src="readme_imgs/snapshot_45_10.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
+<img src="readme_imgs/45_graphs.png" alt="Texto alternativo" style="width:700px; height: auto;">
 
 ### snapshot 22
-<img src="saved_results/snapshot_22_10.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
-<img src="readme_img/22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
+<img src="readme_imgs/snapshot_22_10.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
+<img src="readme_imgs/22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
 
 ### snaphsot 45 + snapshot 22
-
-<img src="readme_img/45+22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
+<img src="readme_imgs/45+22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
 </br>
 
 # MATHS AND PROCESSING
@@ -36,7 +34,7 @@ In the first image seen above, one might think that all of the droplets at the b
 
 The following image is the same image from above, but it does count the droplets in the borders. The problem can inmediatly be seen.
 
-<img src="readme_img/45_border.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
+<img src="readme_imgs/45_border.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
 <!-- <img src="readme_img/45_border_graphs.png" alt="Texto alternativo" style="width:700px; height: auto;"> -->
 
 ### Area of droplets
@@ -44,13 +42,13 @@ The area of droplets it's calculated asumming droplets have the form of an ellip
 
 To illustrate, in green the real area that is calculated, in yellow the area that is missed by te calculation and in red the error area that is calculated.
 
-![Droplet error area illustration](readme_img/area_illustration.png)
+![Droplet error area illustration](readme_imgs/area_illustration.png)
 
 ### How data is added and an explanation of batches
 
 The standard deviation of the parameters, such as width, height and area is calculated with the incremental formula of the standard deviation:
 
-![Incremental stdd formula](readme_img/incremental_stdd.png)
+![Incremental stdd formula](readme_imgs/incremental_stdd.png)
 
 This formula allows to "add" the standard deviation of two or more images together, without having to store all of the individual dimentions of droplets. Basicly, after calculating the standard deviation once, the values from which it was calculated can be forgotten, since they won't be necessary when we want to calculate the new standard deviation from adding another set of droplets.
 
