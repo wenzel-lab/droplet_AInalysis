@@ -3,8 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plot
 from matplotlib.widgets import Button
 from math import pi, sqrt
-from data_management.get_boxes import get_boxes
-from PARAMETERS import WEIGHT
 
 
 def group_in_intervals(bars, interval):
@@ -112,7 +110,6 @@ def show_graphics(events, main_queue, pixel_ratio):
             plot_bar_with_normal(axs[0], width_bars, width_mean, width_std, "Width", unit, n, i, pixel_ratio)
             plot_bar_with_normal(axs[1], height_bars, height_mean, height_std, 'Height', unit, n, i, pixel_ratio)
             plot_bar_with_normal(axs[2], area_bars, area_mean, area_std, 'Area', unit, n, i, pixel_ratio, area_interval)
-            # get_boxes(results, img, "a.jpg", WEIGHT, False)
 
         if updated:
             plot.pause(0.25)

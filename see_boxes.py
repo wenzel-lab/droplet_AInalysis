@@ -37,13 +37,13 @@ for image_path in image_paths:
         model = Yolo(weight)
         results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT, verbose=False)
         img = cv2.imread(image_path)
-        output_path = get_boxes(results, img, image_name, weight, True, True)
+        output_path = get_boxes(results, img, image_name, weight)
         final_images_paths.append(output_path)
 
     frames = [imageio.imread(image_file) for image_file in final_images_paths]
     frames.append(frames[-1])
     frames.append(frames[-1])
-    imageio.mimsave(path.join(output_dir, "history.gif"), frames, duration=len(weights_paths)*80, loop=0)
+    imageio.mimsave(path.join(output_dir, "history.gif"), frames, duration=len(weights_paths)*90, loop=0)
 
     for image_path in final_images_paths[:-1]:
         remove(image_path)

@@ -1,10 +1,10 @@
+from ultralytics import YOLO as Yolo
 from math import pi, sqrt
 from os.path import join
 from data_management.get_dimentions import get_dimentions
-from data_management.get_boxes import get_boxes
 from PARAMETERS import (TEST_IMAGE, WEIGHT, IMGSZ, 
                         CONFIDENCE, MAX_DETECT, PIXEL_RATIO, 
-                        UNIT, SAVE)
+                        UNIT)
 import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plot
@@ -79,7 +79,6 @@ def show_graphics(image_data):
     plot.show()
 
 
-from ultralytics import YOLO as Yolo
 image_path = join("real_imgs",TEST_IMAGE)
 model = Yolo(join("weights", WEIGHT))
 

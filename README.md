@@ -16,15 +16,15 @@ Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the 
 ## Some Results
 
 ### snapshot 45
-<img src="readme_imgs/snapshot_45_10.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
-<img src="readme_imgs/45_graphs.png" alt="Texto alternativo" style="width:700px; height: auto;">
+<img src="readme_imgs/snapshot_45_10.jpg" alt="snapshot 45" style="width: 600px; height: auto;">
+<img src="readme_imgs/45_graphs.png" alt="graph 45" style="width:700px; height: auto;">
 
 ### snapshot 22
-<img src="readme_imgs/snapshot_22_10.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
-<img src="readme_imgs/22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
+<img src="readme_imgs/snapshot_22_10.jpg" alt="snapshot 22" style="width: 600px; height: auto;">
+<img src="readme_imgs/22_graphs.png" alt="graph 22" style="width: 700px; height: auto;">
 
 ### snaphsot 45 + snapshot 22
-<img src="readme_imgs/45+22_graphs.png" alt="Texto alternativo" style="width: 700px; height: auto;">
+<img src="readme_imgs/45+22_graphs.png" alt="graph 22 + 45" style="width: 700px; height: auto;">
 </br>
 
 # MATHS AND PROCESSING
@@ -34,7 +34,7 @@ In the first image seen above, one might think that all of the droplets at the b
 
 The following image is the same image from above, but it does count the droplets in the borders. The problem can inmediatly be seen.
 
-<img src="readme_imgs/45_border.jpg" alt="Texto alternativo" style="width: 600px; height: auto;">
+<img src="readme_imgs/45_border.jpg" alt="45 with borders" style="width: 600px; height: auto;">
 <!-- <img src="readme_img/45_border_graphs.png" alt="Texto alternativo" style="width:700px; height: auto;"> -->
 
 ### Area of droplets
@@ -72,9 +72,13 @@ This images are created by pasting hand-made cutouts of real droplets on random 
 
 New droplets are added to **real_samples** frequently. These are often edge cases that the model didn't recognize, so by adding them we can train the model again, so that it can recognize these "weird" droplets next time.
 
-However, adding new droplets is not the only technique used to improve the detection rate. When placed, droplets are randomly: rotated, streched, given transparency and darkened. These have proven to be very good techniques, and have made the general detection error much lower.
+However, adding new droplets is not the only technique used to improve the detection rate. When placed, droplets are randomly: rotated, mirrored, streched, given transparency and darkened. These transformations have proven to be very usefull, and have made the general detection error much lower.
 
-The droplets in generated images will not overlap with eachother, except for a 6 pixel margin. This is made to better simulate the droplet proximity of real photos.
+Here is a visualization of the detection model's history of improvements. The upleft number is the version of the weight that was used for the prediction. At version five the darkening transformation was implemented. Later others such as stretching and transparency were implemented as well.
+
+<img src="readme_imgs/history.gif" alt="history gif" style="width: 600px; height: auto;">
+
+The droplets in generated images will not overlap with eachother, except for a 4 pixel margin. This is made to better simulate the droplet proximity of real photos.
 
 The droplets and backgrounds used are choosen randomly for every training image.
 

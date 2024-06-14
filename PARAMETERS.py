@@ -5,4 +5,3 @@ PIXEL_RATIO = 1
 UNIT = "px"
 TEST_IMAGE = "snapshot_59.jpg"
 WEIGHT = "best_10.pt"
-SAVE = True # for get_boxes.py
