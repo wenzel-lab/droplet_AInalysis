@@ -78,7 +78,7 @@ Here is a visualization of the detection model's history of improvements. The up
 
 <img src="readme_imgs/history.gif" alt="history gif" style="width: 600px; height: auto;">
 
-The droplets in generated images will not overlap with eachother, except for a 4 pixel margin. This is made to better simulate the droplet proximity of real photos. This value was previously higher, allowing for more overlap, which caused the bigger circles seen in gif for weights 7 and 8.
+The droplets in generated images will not overlap with eachother, except for a 4 pixel margin. This is made to better simulate the droplet proximity of real photos. This value was previously higher, allowing for more overlap, which caused the bigger circles seen in the gif for weights 7 and 8.
 
 The droplets and backgrounds used are choosen randomly for every training image.
 
