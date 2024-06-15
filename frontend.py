@@ -60,7 +60,7 @@ def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, i, pixel_ratio, in
     ax.plot(x, y*height, color='darkblue')
 
     if len(categories) and std != 0:
-        ax.set_ylim(0, max(max_quantity, height*(constant)/std)*1.15)
+        ax.set_ylim(0, max(max_quantity, height*(constant)/std)*1.1)
     else:
         ax.set_ylim(0, 1.15)
 
@@ -68,24 +68,24 @@ def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, i, pixel_ratio, in
     ax.set_xlabel(f"|  μ = {mean} {unit}{square}  |  |  σ = {std} {unit}{square}  |")
     if title == "WIDTH":
         ax.set_ylabel("Quantity")
-        ax.text(0.02, 0.98, "Droplets/image = " + str(round(n/i)), 
+        ax.text(0.019, 0.985, "Droplets/image = " + str(round(n/i)), 
                 transform=ax.transAxes, fontsize=12, 
                 verticalalignment='top', bbox=dict(facecolor='white', alpha=0.5))
 
 def show_graphics(events, main_queue, pixel_ratio):
     plot.ion()
-    fig, axs = plot.subplots(1, 3, figsize=(12, 5), num="Droplet AInalysis")
+    fig, axs = plot.subplots(1, 3, figsize=(12.5, 5), num="Droplet AInalysis")
     fig.canvas.mpl_connect("close_event", lambda _: exit_program(_, events))
 
-    ax_e = plot.axes([0.005, 0.85, 0.05, 0.07])
+    ax_e = plot.axes([0.005, 0.9, 0.05, 0.07])
     btn_e = Button(ax_e, 'Exit')
     btn_e.on_clicked(lambda _: exit_program(_, events))
 
-    ax_f = plot.axes([0.005, 0.75, 0.05, 0.07])
+    ax_f = plot.axes([0.005, 0.8, 0.05, 0.07])
     btn_f = Button(ax_f, 'Forget')
     btn_f.on_clicked(lambda _: forget(_, events))
 
-    ax_p = plot.axes([0.005, 0.65, 0.05, 0.07])
+    ax_p = plot.axes([0.005, 0.7, 0.05, 0.07])
     btn_p = Button(ax_p, "Pause")
     btn_p.on_clicked(lambda _: pause(_, events))
 
@@ -120,7 +120,3 @@ def show_graphics(events, main_queue, pixel_ratio):
 
         if updated:
             plot.pause(0.2)
-
-
-def handle_inputs(events):
-    pass

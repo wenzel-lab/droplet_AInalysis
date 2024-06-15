@@ -1,3 +1,4 @@
+import sys
 from time import sleep
 from copy import deepcopy
 import cv2
@@ -5,30 +6,7 @@ from PARAMETERS import (PIXEL_RATIO, UNIT, IMGSZ, CONFIDENCE, WEIGHT,
                         MAX_DETECT)
 from data_management.get_distributions import get_dimentions
 import queue
-import sys
 
-def manage_inputs(events):
-    first_loop = True
-    while not events["exit"].is_set():
-        if not first_loop:
-            sys.stdout.write("\033[F" * 2)
-            sys.stdout.write("\033[K\033[F" * 2 + "\033[K")
-            sys.stdout.flush()
-        if events["pause"].is_set():
-            command = input("1. e to Exit\n2. p to unPause\n3. f to Forget\n")
-        else:
-            command = input("1. e to Exit\n2. p to Pause\n3. f to Forget\n")
-        if command == "p" or command == "P":
-            if events["pause"].is_set():
-                events["pause"].clear()
-            else:
-                events["pause"].set()
-        if command == "f" or command == "F":
-            events["forget"].set()
-        if command == "e" or command == "E":
-            events["exit"].set()
-
-        first_loop = False
 
 def waiting_screen(evento):
     i = 0
@@ -36,7 +14,7 @@ def waiting_screen(evento):
         print(f"Seting up the model{'.'*i}", end='\r', flush=True)
         sleep(0.6)
         i+=1
-    print()
+    print("                   " + " "*i)
 
 def set_up(evento, queue):
     from os.path import join
@@ -59,13 +37,59 @@ def add_to_main_queue(q, element):
         pass
     q.put(element)       
 
-def predict(model, image_data, empty_data, cap, events, queue, graphics):
-    if not graphics:
-        sleep(0.02)
-        print("+---------+")
-        print("| 1 image |")
-        print(image_data)
-    image_counter = 2
+def manage_inputs(events, extra1 = None, extra2 = None):
+    first_loop = True
+    while not events["exit"].is_set():
+        if not first_loop:
+            sys.stdout.write("\033[F" * 2)
+            sys.stdout.write("\033[K\033[F" * 2 + "\033[K")
+            sys.stdout.flush()
+        command = input("1. e to Exit\n2. p to Pause or unPause\n3. f to Forget\n")
+        if command == "p" or command == "P":
+            if events["pause"].is_set():
+                events["pause"].clear()
+            else:
+                events["pause"].set()
+        if command == "f" or command == "F":
+            events["forget"].set()
+        if command == "e" or command == "E":
+            events["exit"].set()
+
+        first_loop = False
+
+def terminal_mode(model, image_data, empty_data, cap, events):
+    sleep(0.02)
+    print("+---------+")
+    print("| 1 image |")
+    print(image_data)
+    image_counter = 1
+    first_pause_frame = True
+    while not events["exit"].is_set():
+        if events["forget"].is_set():
+            image_data = deepcopy(empty_data)
+            events["forget"].clear()
+
+        img = cap.read()[1]
+        if not events["pause"].is_set():
+            results = model.predict(img, imgsz = 640, conf=CONFIDENCE, max_det=MAX_DETECT)
+            new_data = get_dimentions(results, PIXEL_RATIO, UNIT)
+            image_data = image_data + new_data
+            image_counter += 1
+            first_pause_frame = True
+
+        if image_counter == 10 or (first_pause_frame and events["pause"].is_set()):
+            sys.stdout.write("\033[F" * 5)
+            sys.stdout.write("\033[K\033[F" * 4 + "\033[K")
+            sys.stdout.flush()
+            ammount_string = f"| {image_data.images_added} {'images' if image_data.images_added > 1 else 'image'} |"
+            print(f"+{'-'*(len(ammount_string)-2)}+")
+            print(ammount_string)
+            print(image_data)
+            if image_counter == 10:
+                image_counter = 0
+
+
+def graph_mode(model, image_data, empty_data, cap, events, queue):
     while not events["exit"].is_set():
         if events["forget"].is_set():
             image_data = deepcopy(empty_data)
@@ -77,15 +101,4 @@ def predict(model, image_data, empty_data, cap, events, queue, graphics):
             new_data = get_dimentions(results, PIXEL_RATIO, UNIT)
             image_data = image_data + new_data
 
-        if graphics:
-            add_to_main_queue(queue, image_data)
-        elif image_counter == 10:
-            sys.stdout.write("\033[F" * 5)
-            sys.stdout.write("\033[K\033[F" * 4 + "\033[K")
-            sys.stdout.flush()
-            ammount_string = f"| {image_data.images_added} {'images' if image_data.images_added > 1 else 'image'} |"
-            print(f"+{'-'*(len(ammount_string)-2)}+")
-            print(ammount_string)
-            print(image_data)
-            image_counter = 0
-        image_counter += 1
+        add_to_main_queue(queue, image_data)
