@@ -4,4 +4,4 @@ MAX_DETECT = 500 # maximum amount of droplets that can be detected in the image
 PIXEL_RATIO = 1 # must be an integer or float
 UNIT = "px" # must be a string
 TEST_IMAGE = "snapshot_59.jpg"
-WEIGHT = "best_10.pt"
+WEIGHT = "best_11.pt"
