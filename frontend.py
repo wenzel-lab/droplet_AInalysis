@@ -68,7 +68,7 @@ def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, i, pixel_ratio, in
     ax.set_xlabel(f"|  μ = {mean} {unit}{square}  |  |  σ = {std} {unit}{square}  |")
     if title == "WIDTH":
         ax.set_ylabel("Quantity")
-        ax.text(0.02, 0.98, "Droplets per image: " + str(round(n/i)), 
+        ax.text(0.02, 0.98, "Droplets/image = " + str(round(n/i)), 
                 transform=ax.transAxes, fontsize=12, 
                 verticalalignment='top', bbox=dict(facecolor='white', alpha=0.5))
 
@@ -86,7 +86,7 @@ def show_graphics(events, main_queue, pixel_ratio):
     btn_f.on_clicked(lambda _: forget(_, events))
 
     ax_p = plot.axes([0.005, 0.65, 0.05, 0.07])
-    btn_p = Button(ax_p, 'Pause')
+    btn_p = Button(ax_p, "Pause")
     btn_p.on_clicked(lambda _: pause(_, events))
 
     while not events["exit"].is_set():
@@ -96,16 +96,16 @@ def show_graphics(events, main_queue, pixel_ratio):
 
             image_data = main_queue.get()
             width_bars = image_data.width_bars[0]
-            width_mean = image_data.width_distribution[1]
-            width_std = image_data.width_distribution[2]
+            width_mean = image_data.width_distribution[2]
+            width_std = image_data.width_distribution[3]
 
             height_bars = image_data.height_bars[0]
-            height_mean = image_data.height_distribution[1]
-            height_std = image_data.height_distribution[2]
+            height_mean = image_data.height_distribution[2]
+            height_std = image_data.height_distribution[3]
 
             area_bars = image_data.area_bars[0]
-            area_mean = image_data.area_distribution[1]
-            area_std = image_data.area_distribution[2]
+            area_mean = image_data.area_distribution[2]
+            area_std = image_data.area_distribution[3]
             area_interval = image_data.area_interval[0]
             area_bars = group_in_intervals(area_bars, area_interval)
 
@@ -120,3 +120,7 @@ def show_graphics(events, main_queue, pixel_ratio):
 
         if updated:
             plot.pause(0.2)
+
+
+def handle_inputs(events):
+    pass

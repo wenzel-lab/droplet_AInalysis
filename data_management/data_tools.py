@@ -9,30 +9,20 @@ def sum_int(a: int, b:int):
 def sub_int(a: int, b:int):
     return a - b
 
+def sum_interval(interval1: int, interval2: int):
+    return max(interval1, interval2)
+
+def sub_interval(interval: int, interval_list: int):
+    for i in interval_list:
+        if i != 1:
+            return interval
+    return 1
+
 def sum_sums(list1: list, list2: list):
     return [w1 + w2 for w1, w2 in zip(list1, list2)]
 
 def sub_sums(list1: list, list2: list):
     return [w1 - w2 for w1, w2 in zip(list1, list2)]
-
-def choose_interval(list1, second_interval, i, batch_size, max_batches):
-    chosen_option = "self"
-
-    if not i%batch_size:
-        list1[1].append(0)
-
-    if i == batch_size*max_batches:
-        list1[1].pop(0)
-        max_interval = max(list1[1])
-        list1[0] = max_interval
-
-    if second_interval > list1[0]:
-        list1[0] = second_interval
-        chosen_option = "other"
-    
-    list1[1][-1] = max(list1[1][-1], second_interval)
-    
-    return list1, chosen_option
 
 def sum_bars(list1: list, list2: list):
     merged_list = []
@@ -99,3 +89,13 @@ def sort_and_group(list1: list, name):
         else:
             list2[-1][1] += 1
     return list2
+
+def group_in_intervals(bars, interval):
+    new_list = []
+    for messure, q in bars:
+        new_messure = round(messure/interval)*interval
+        if not len(new_list) or new_messure > new_list[-1][0]:
+            new_list.append([new_messure, q])
+        else:
+            new_list[-1][1] += q
+    return new_list

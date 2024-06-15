@@ -66,16 +66,16 @@ def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, pixel_ratio = 1, i
 
 def show_graphics(image_data):
     width_bars = image_data.width_bars[0]
-    width_mean = image_data.width_distribution[1]
-    width_std = image_data.width_distribution[2]
+    width_mean = image_data.width_distribution[2]
+    width_std = image_data.width_distribution[3]
 
     height_bars = image_data.height_bars[0]
-    height_mean = image_data.height_distribution[1]
-    height_std = image_data.height_distribution[2]
+    height_mean = image_data.height_distribution[2]
+    height_std = image_data.height_distribution[3]
 
     area_bars = image_data.area_bars[0]
-    area_mean = image_data.area_distribution[1]
-    area_std = image_data.area_distribution[2]
+    area_mean = image_data.area_distribution[2]
+    area_std = image_data.area_distribution[3]
     area_interval = image_data.area_interval[0]
     area_bars = group_in_intervals(area_bars, area_interval)
 
@@ -95,4 +95,5 @@ model = Yolo(join("weights", WEIGHT))
 
 results = model.predict(image_path, imgsz = IMGSZ, conf=CONFIDENCE, max_det=MAX_DETECT)
 image_data = get_dimentions(results, PIXEL_RATIO, UNIT)
+print(image_data)
 show_graphics(image_data)

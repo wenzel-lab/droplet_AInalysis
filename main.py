@@ -1,7 +1,9 @@
+mode = input('Do you want to show Graphs?\n1. "Y" key to show graphs\n2. Any other key to not show graphs\n-> ')
+
 from threading import Thread, Event
 from queue import Queue
 from copy import deepcopy
-from backend import (set_up, waiting_screen, predict)
+from backend import (manage_inputs, set_up, waiting_screen, predict)
 from frontend import show_graphics
 from PARAMETERS import PIXEL_RATIO
 
@@ -26,10 +28,23 @@ events = {"exit": Event(),
           "forget": Event()}
 
 main_queue = Queue()
-prediction_thread = Thread(target=predict, args=(model, empty_data, deepcopy(empty_data), cap, events, main_queue), daemon=True)
+if mode == "Y" or mode == "y":
+    graphics_thread = Thread(target=show_graphics, args=(events, main_queue, PIXEL_RATIO), daemon=True)
+    prediction_thread = Thread(target=predict, args=(model, empty_data, deepcopy(empty_data), cap, events, main_queue, True), daemon=True)
 
-prediction_thread.start()
-show_graphics(events, main_queue, PIXEL_RATIO)
+    prediction_thread.start()
+    graphics_thread.start()
 
-prediction_thread.join()
+    prediction_thread.join()
+    graphics_thread.join()
+else:
+    inputs_thread = Thread(target=manage_inputs, args=(events,), daemon=True)
+    prediction_thread = Thread(target=predict, args=(model, empty_data, deepcopy(empty_data), cap, events, main_queue, False), daemon=True)
+    
+    prediction_thread.start()
+    inputs_thread.start()
+
+    prediction_thread.join()
+    inputs_thread.join()
+
 print("Exit sucessfull!")
