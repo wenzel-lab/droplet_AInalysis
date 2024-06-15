@@ -45,29 +45,31 @@ def manage_inputs(events, extra1 = None, extra2 = None):
             sys.stdout.write("\033[K\033[F" * 2 + "\033[K")
             sys.stdout.flush()
         command = input("1. e to Exit\n2. p to Pause or unPause\n3. f to Forget\n")
+
         if command == "p" or command == "P":
             if events["pause"].is_set():
                 events["pause"].clear()
             else:
                 events["pause"].set()
+
         if command == "f" or command == "F":
             events["forget"].set()
+
         if command == "e" or command == "E":
             events["exit"].set()
 
         first_loop = False
 
 def terminal_mode(model, image_data, empty_data, cap, events):
-    sleep(0.02)
-    print("+---------+")
-    print("| 1 image |")
+    sleep(0.01)
     print(image_data)
     image_counter = 1
-    first_pause_frame = True
+    pause_frame = 0
     while not events["exit"].is_set():
         if events["forget"].is_set():
             image_data = deepcopy(empty_data)
             events["forget"].clear()
+            image_counter = 1
 
         img = cap.read()[1]
         if not events["pause"].is_set():
@@ -75,18 +77,19 @@ def terminal_mode(model, image_data, empty_data, cap, events):
             new_data = get_dimentions(results, PIXEL_RATIO, UNIT)
             image_data = image_data + new_data
             image_counter += 1
-            first_pause_frame = True
+            pause_frame = 0
+        else:
+            pause_frame += 1
 
-        if image_counter == 10 or (first_pause_frame and events["pause"].is_set()):
+        if image_counter == 10 or (pause_frame == 10 and events["pause"].is_set()):
             sys.stdout.write("\033[F" * 5)
             sys.stdout.write("\033[K\033[F" * 4 + "\033[K")
             sys.stdout.flush()
-            ammount_string = f"| {image_data.images_added} {'images' if image_data.images_added > 1 else 'image'} |"
-            print(f"+{'-'*(len(ammount_string)-2)}+")
-            print(ammount_string)
             print(image_data)
             if image_counter == 10:
                 image_counter = 0
+            pause_frame = 0
+        
 
 
 def graph_mode(model, image_data, empty_data, cap, events, queue):

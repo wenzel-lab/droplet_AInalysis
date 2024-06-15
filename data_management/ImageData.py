@@ -137,7 +137,12 @@ class ImageData:
                                  "Std Dev", 
                                  "Unit"], 
                         tablefmt="pretty").split("\n")
+
         return_string = ""
+
+        ammount_string = f"| {self.images_added} {'images' if self.images_added > 1 else 'image'} |\n"
+        return_string += f"+{'-'*(len(ammount_string)-3)}+\n"
+        return_string += ammount_string
         for line in table_lines:
             return_string += line + "        \n"
 
