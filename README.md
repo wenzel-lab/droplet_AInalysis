@@ -2,19 +2,25 @@
 This repository implements machine learning to detect droplets on images. After the detection is performed, the dimentions of this images are calculated. The dimentions can be shown in real time with a connected webcam or just for a single image.
 
 # Main functionalities
-There are three programms in this repository that a normal user would like to run: **main.py**, **see_boxes.py** and **see_distributions.py**.
+There are three programms in this repository that a normal user would like to run: **main.py**, **see_ellipses.py** and **see_distributions.py**.
 
 ## main.py
-This programm starts the webcam of your device and takes pictures periodicly. With each picture, the programm runs a prediction of the droplets in it and then collects the data of the dimentions of these. The data of the dimentions is then constantly used to update the visual interface of the density distribution of width, height and area.
+This programm starts the webcam of your device and takes pictures periodicly. With each picture, the programm runs a prediction of the droplets in it and then collects the data of the dimentions of these. The data of the dimentions is then constantly used to update the visual interface of the density distribution of width, height and area. 
 
-## see_boxes.py
-(pending description)
+There are two modes for **main.py**: Graph mode and Terminal mode. If Graph mode is chosen, then the data will be shown as three bar graphs. Each of them with a curve for the density distribution of the data, made with the mean and the standard deviation, asuming a normal distribution. If terminal is chosen, then only the numbers will be shown and the bar graphs and the curve will be omitted. The terminal mode is a good option if the user wants to save comptutation power.
+
+Both modes will have three possible interactions: **Exit**, togle **Pause** and **Forget**. When **Exit** is chosen the programm will be stopped and closed. When togle **Pause** is chosen it will pause the addition of the data of new webcam captures until togle **Pause** is chosen again. If **Forget** is chosen, the current data will be substituted with the data of one empty image.
+
+The average speed of **main.py** in terminal mode is of 30 fps, while on graph mode is of 20 fps. Graph mode also stops for a few moments sometimes. If someone were to continue and improve this repository I think improving the graph mode should be a priority.
+
+## see_ellipses.py
+This programm predicts the droplets in an image, then it draws an ellipse over each of them, creating a new image that shows what was detected. The programm gives two option when it is started. To do this for only one image, which has to be specified in **PARAMETERS.py** or to do this for all images in **imgs\real_imgs**. The resulting image will be saved in **imgs\results\name_of_image** allong with a gif that shows the result compared to previous versions of the detection model.
 
 ## see_distributions.py
-(pending description)
+This programm also does a prediction over an image. After doing the prediction, it will print on the terminal the data of the distribution from width, height and area of the droplets that were detected. Allong with opening a new window that shows three bar graphs with quantities of the detected sizes and a curve for the density distribution of the droplets, asuming a normal distribution.
 
-### Change the parameters in these programms
-Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the unit of meassurement, the weight used in the model, the image that is analized in **test_functions.py**, wether the result is saved in /saved_results, among other things.
+### PARAMETERS.py
+Change the values in **PARAMETERS.py** in order to change: the pixel ratio, the unit of meassurement, the weight used in the model, the image that is analized in **see_ellipses.py** and **see_distributions**, among other things.
 
 # Some Results
 
@@ -38,7 +44,6 @@ In the first image seen above, one might think that all of the droplets at the b
 The following image is the same from above, but it does count the droplets in the borders. The problem can inmediatly be seen.
 
 <img src="imgs/readme_imgs/45_border.jpg" alt="45 with borders" style="width: 600px; height: auto;">
-<!-- <img src="readme_img/45_border_graphs.png" alt="Texto alternativo" style="width:700px; height: auto;"> -->
 
 ## Area of droplets
 The area of droplets it's calculated asumming droplets have the form of an ellipse, whichs' axes are paralel to the x and y axes from the main picture.

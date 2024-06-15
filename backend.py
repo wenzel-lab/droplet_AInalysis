@@ -28,14 +28,7 @@ def set_up(evento, queue):
     queue.put(image_data)
     queue.put(cap)
 
-    evento.set()
-
-def add_to_main_queue(q, element):
-    try:
-        q.get_nowait()
-    except queue.Empty:
-        pass
-    q.put(element)       
+    evento.set()   
 
 def manage_inputs(events, extra1 = None, extra2 = None):
     first_loop = True
@@ -46,16 +39,16 @@ def manage_inputs(events, extra1 = None, extra2 = None):
             sys.stdout.flush()
         command = input("1. e to Exit\n2. p to Pause or unPause\n3. f to Forget\n")
 
-        if command == "p" or command == "P":
+        if command == "p" or command == "P" or command.lower() == "pause" or command.lower() == "unpause":
             if events["pause"].is_set():
                 events["pause"].clear()
             else:
                 events["pause"].set()
 
-        if command == "f" or command == "F":
+        if command == "f" or command == "F" or command.lower() == "forget":
             events["forget"].set()
 
-        if command == "e" or command == "E":
+        if command == "e" or command == "E" or command.lower() == "exit":
             events["exit"].set()
 
         first_loop = False
@@ -89,8 +82,13 @@ def terminal_mode(model, image_data, empty_data, cap, events):
             if image_counter == 10:
                 image_counter = 0
             pause_frame = 0
-        
 
+def add_to_main_queue(q, element):
+    try:
+        q.get_nowait()
+    except queue.Empty:
+        pass
+    q.put(element)
 
 def graph_mode(model, image_data, empty_data, cap, events, queue):
     while not events["exit"].is_set():
