@@ -7,22 +7,29 @@ if not captura.isOpened():
     print("Error al abrir la cámara")
     exit()
 
-while True:
-    # Lee una imagen de la cámara
-    ret, imagen = captura.read()
+# Nombre de la ventana
+nombre_ventana = 'Cámara'
 
-    if not ret:
-        print("Error al capturar la imagen")
-        break
+# Creación de una ventana que se reutilizará para mostrar todas las imágenes
+cv2.namedWindow(nombre_ventana)
 
-    # Muestra la imagen en una ventana llamada 'Cámara'
-    cv2.imshow('Cámara', imagen)
+try:
+    while True:
+        # Lee una imagen de la cámara
+        ret, imagen = captura.read()
 
-    # Espera 500 ms (0.5 segundos)
-    # Si el usuario presiona la tecla 'q' durante este tiempo, saldrá del bucle
-    if cv2.waitKey(100) & 0xFF == ord('q'):
-        break
+        if not ret:
+            print("Error al capturar la imagen")
+            break
 
-# Libera el recurso de captura de la cámara y cierra todas las ventanas
-captura.release()
-cv2.destroyAllWindows()
+        # Muestra la imagen en la ventana creada
+        cv2.imshow(nombre_ventana, imagen)
+
+        # Espera 500 ms (0.5 segundos) para la siguiente captura
+        # Si el usuario presiona la tecla 'q' durante este tiempo, se saldrá del bucle
+        if cv2.waitKey(500) & 0xFF == ord('q'):
+            break
+finally:
+    # Asegura la liberación del recurso de captura de la cámara y el cierre de la ventana
+    captura.release()
+    cv2.destroyAllWindows()
