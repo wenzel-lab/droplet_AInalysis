@@ -1,5 +1,5 @@
 # Introduction
-This repository implements machine learning to detect droplets on images. After the detection is performed, the dimentions of this images are calculated. The dimentions can be shown in real time with a connected webcam or just for a single image.
+This repository implements machine learning to detect droplets on images. After the detection is performed, the dimentions on these images are calculated. The dimentions can be shown in real time with a connected webcam or just for a single image.
 
 # Main functionalities
 There are three programms in this repository that a normal user would like to run: **main.py**, **see_ellipses.py** and **see_distributions.py**.
