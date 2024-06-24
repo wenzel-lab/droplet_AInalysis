@@ -56,7 +56,7 @@ def manage_inputs(events, extra1 = None, extra2 = None):
 def terminal_mode(model, image_data, empty_data, cap, events):
     sleep(0.01)
     print(image_data)
-    image_counter = 1
+    image_counter = 0
     pause_frame = 0
     while not events["exit"].is_set():
         if events["forget"].is_set():
@@ -74,12 +74,12 @@ def terminal_mode(model, image_data, empty_data, cap, events):
         else:
             pause_frame += 1
 
-        if image_counter == 2 or (pause_frame == 2 and events["pause"].is_set()):
+        if image_counter == 1 or (pause_frame == 1 and events["pause"].is_set()):
             sys.stdout.write("\033[F" * 5)
             sys.stdout.write("\033[K\033[F" * 4 + "\033[K")
             sys.stdout.flush()
             print(image_data)
-            if image_counter == 2:
+            if image_counter == 1:
                 image_counter = 0
             pause_frame = 0
 
