@@ -6,3 +6,4 @@ training_field/datasets/images/val
 training_field/datasets/labels/train
 training_field/datasets/labels/val
 imgs/results/*
+.venv/

@@ -13,7 +13,7 @@ packages = [
 def install_packages(packages):
     for package in packages:
         print(f"Instalando {package}...")
-        check_call([executable, "-m", "pip", "install", package])
+        check_call([executable, "-m", "pip3", "install", package])
 
 if __name__ == "__main__":
     install_packages(packages)

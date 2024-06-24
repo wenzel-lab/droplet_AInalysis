@@ -23,7 +23,7 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
     if darken == "background":
         big_image = random_darkening(big_image)
 
-    small_images = [Image.open(i) for i in small_images_path]
+    small_images = [Image.open(i).convert("RGBA") for i in small_images_path]
 
     labels = []
     positions = []
