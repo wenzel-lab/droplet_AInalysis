@@ -20,7 +20,7 @@ while True:
 
     # Espera 500 ms (0.5 segundos)
     # Si el usuario presiona la tecla 'q' durante este tiempo, saldrá del bucle
-    if cv2.waitKey(500) & 0xFF == ord('q'):
+    if cv2.waitKey(100) & 0xFF == ord('q'):
         break
 
 # Libera el recurso de captura de la cámara y cierra todas las ventanas
