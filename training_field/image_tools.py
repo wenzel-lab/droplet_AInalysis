@@ -1,9 +1,10 @@
-from random import uniform, choice, randint, choices
-from PIL import ImageEnhance, Image
+from random import uniform, choice, randint, choices, random
+from math import ceil
+from PIL import ImageEnhance, Image, ImageFilter
 
 
 def check_overlap(x1, y1, w1, h1, positions):
-    o = 4 # Increase this value for more overlap of droplets
+    o = 3 # Increase this value for more overlap of droplets
     for (x2, y2, w2, h2) in positions:
         if (x2 + o < x1 + w1 and x1 < x2 + w2 - o) and (y2 + o < y1 + h1 and y1 < y2 + h2 - o):
             return True
@@ -109,5 +110,20 @@ def transparency(image):
 
     if apply_gradient:
         return new_image
-    else:
-        return image
+    return image
+
+def blur(image):
+    small_width, small_height = image.size
+    apply_effect = choices([False, True], weights=[0.3, 0.7])
+    if apply_effect:
+        blur_radius = random()*2
+        margin = ceil(blur_radius)
+
+        new_width = small_width + 2 * margin
+        new_height = small_height + 2 * margin
+
+        new_image = Image.new("RGBA", (new_width, new_height), (0, 0, 0, 0))
+        new_image.paste(image, (margin, margin))
+
+        return new_image.filter(ImageFilter.GaussianBlur(radius = blur_radius))
+    return image

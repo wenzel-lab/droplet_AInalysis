@@ -2,7 +2,8 @@ from random import randint, choices, choice
 from PIL import Image
 from image_tools import (random_darkening, transparency, 
                          check_overlap, crop, rotate, 
-                         flip_flop, expand, color_filters)
+                         flip_flop, expand, color_filters,
+                         blur)
 
 
 def format_coordinates(x, y, small_width, small_height, big_width, big_height) -> str:
@@ -40,7 +41,7 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
         small_image = color_filters(small_image)
         small_image = random_darkening(small_image)
         small_image = transparency(small_image)
-
+        small_image = blur(small_image)
         small_width, small_height = small_image.size
 
         attempts = 0

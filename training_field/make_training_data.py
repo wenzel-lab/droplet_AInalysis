@@ -18,8 +18,8 @@ val_labels_dir = path.join("datasets", "labels", "val")
 outputs_dirs.append((val_images_dir, val_labels_dir))
 
 for images_dir, labels_dir in outputs_dirs:
-        for j in range(900):
-            droplet_sample_size = randint(1,len(droplet_paths)-1)
+        for j in range(1, 901):
+            droplet_sample_size = randint(1, randint(4, len(droplet_paths)-1))
             droplets_paths = choices(droplet_paths, k=droplet_sample_size)
             background_path = choice(backgrounds_paths)
 
