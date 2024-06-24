@@ -74,12 +74,12 @@ def terminal_mode(model, image_data, empty_data, cap, events):
         else:
             pause_frame += 1
 
-        if image_counter == 1 or (pause_frame == 1 and events["pause"].is_set()):
+        if image_counter == 2 or (pause_frame == 2 and events["pause"].is_set()):
             sys.stdout.write("\033[F" * 5)
             sys.stdout.write("\033[K\033[F" * 4 + "\033[K")
             sys.stdout.flush()
             print(image_data)
-            if image_counter == 1:
+            if image_counter == 2:
                 image_counter = 0
             pause_frame = 0
 
