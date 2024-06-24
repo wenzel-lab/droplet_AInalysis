@@ -8,8 +8,8 @@ from data_management.data_tools import (sum_int, sub_int,
                                         group_in_intervals)
 
 class ImageData:
-    batch_size = 60
-    max_batches = 5
+    batch_size = 10
+    max_batches = 6
 
     def __init__(self, n_droplets: int, size: tuple,
                  width_sums: list, height_sums: list, area_sums: list, 
