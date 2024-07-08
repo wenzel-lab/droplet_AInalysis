@@ -9,7 +9,8 @@ if __name__ == "__main__":
     model = YOLO(join("runs","detect","test11","weights","best.pt"))
 
     results = model.train(data="train_1.yaml", 
-                          epochs=120, workers=1, 
+                          single_cls = True,
+                          epochs=150, workers=1, 
                           imgsz=640, batch=9, 
                           name="test12", 
                           device="0", 

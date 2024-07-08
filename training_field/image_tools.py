@@ -1,6 +1,8 @@
 from random import uniform, choice, randint, choices, random
 from math import ceil
 from PIL import ImageEnhance, Image, ImageFilter
+import cv2
+import numpy as np
 
 
 def check_overlap(x1, y1, w1, h1, positions):
@@ -112,12 +114,31 @@ def transparency(image):
         return new_image
     return image
 
-def blur(image):
+def test(pil_image):
+    image_np = np.array(pil_image)
+    kernel_size = randint(1, 12)
+
+    if pil_image.mode == "RGB":
+        image_np = cv2.cvtColor(image_np, cv2.COLOR_RGBA2BGR)
+
+    kernel = np.zeros((1, kernel_size))
+    kernel[0] = np.ones(kernel_size) / kernel_size
+
+    blurred_np = cv2.filter2D(image_np, -1, kernel)
+
+    if pil_image.mode == "RGB":
+        blurred_np = cv2.cvtColor(blurred_np, cv2.COLOR_BGR2RGBA)
+
+    blurred_pil = Image.fromarray(blurred_np)
+
+    return blurred_pil
+
+def random_blur(image):
     small_width, small_height = image.size
     apply_effect = choices([False, True], weights=[0.3, 0.7])
     if apply_effect:
-        blur_radius = random()*2
-        margin = ceil(blur_radius)
+        blur_radius = random()*1
+        margin = round(blur_radius)
 
         new_width = small_width + 2 * margin
         new_height = small_height + 2 * margin

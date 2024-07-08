@@ -22,6 +22,7 @@ for images_dir, labels_dir in outputs_dirs:
             droplet_sample_size = randint(1, randint(4, len(droplet_paths)-1))
             droplets_paths = choices(droplet_paths, k=droplet_sample_size)
             background_path = choice(backgrounds_paths)
+            print(j)
 
             place_images(
                 big_image_path = background_path,

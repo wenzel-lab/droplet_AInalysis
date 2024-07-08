@@ -32,9 +32,9 @@ def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, i, pixel_ratio, in
     ax.clear()
     square = ""
     plus_minus = ""
-    if title == "AREA":
+    if title == "VOLUME":
         pixel_ratio *= pixel_ratio
-        square = "²"
+        square = "³"
         plus_minus = f"± {round(interval*pixel_ratio*0.5, 2)}"
     
     categories = []
@@ -66,7 +66,7 @@ def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, i, pixel_ratio, in
 
     ax.set_title(f"{title}  |  mode = {mode} {plus_minus} {unit}{square}  |")
     ax.set_xlabel(f"|  μ = {mean} {unit}{square}  |  |  σ = {std} {unit}{square}  |")
-    if title == "WIDTH":
+    if title == "DIAMETER":
         ax.set_ylabel("Quantity")
         ax.text(0.019, 0.985, "Droplets/image = " + str(round(n/i)), 
                 transform=ax.transAxes, fontsize=12, 
@@ -74,7 +74,7 @@ def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, i, pixel_ratio, in
 
 def show_graphics(events, main_queue, pixel_ratio):
     plot.ion()
-    fig, axs = plot.subplots(1, 3, figsize=(12.5, 5), num="Droplet AInalysis")
+    fig, axs = plot.subplots(1, 2, figsize=(12.5, 5), num="Droplet AInalysis")
     fig.canvas.mpl_connect("close_event", lambda _: exit_program(_, events))
 
     ax_e = plot.axes([0.005, 0.9, 0.05, 0.07])
@@ -95,28 +95,23 @@ def show_graphics(events, main_queue, pixel_ratio):
             updated = True
 
             image_data = main_queue.get()
-            width_bars = image_data.width_bars[0]
-            width_mean = image_data.width_distribution[2]
-            width_std = image_data.width_distribution[3]
+            diameter_bars = image_data.diameter_bars[0]
+            diameter_mean = image_data.diameter_distribution[2]
+            diameter_std = image_data.diameter_distribution[3]
 
-            height_bars = image_data.height_bars[0]
-            height_mean = image_data.height_distribution[2]
-            height_std = image_data.height_distribution[3]
-
-            area_bars = image_data.area_bars[0]
-            area_mean = image_data.area_distribution[2]
-            area_std = image_data.area_distribution[3]
-            area_interval = image_data.area_interval[0]
-            area_bars = group_in_intervals(area_bars, area_interval)
+            volume_bars = image_data.volume_bars[0]
+            volume_mean = image_data.volume_distribution[2]
+            volume_std = image_data.volume_distribution[3]
+            volume_interval = image_data.volume_interval[0]
+            volume_bars = group_in_intervals(volume_bars, volume_interval)
 
             unit = image_data.unit
             n = image_data.n_droplets[0]
             i = image_data.images_added
             fig.suptitle(f'{i} images considered')
 
-            plot_bar_with_normal(axs[0], width_bars, width_mean, width_std, "WIDTH", unit, n, i, pixel_ratio)
-            plot_bar_with_normal(axs[1], height_bars, height_mean, height_std, 'HEIGHT', unit, n, i, pixel_ratio)
-            plot_bar_with_normal(axs[2], area_bars, area_mean, area_std, 'AREA', unit, n, i, pixel_ratio, area_interval)
+            plot_bar_with_normal(axs[0], diameter_bars, diameter_mean, diameter_std, "DIAMETER", unit, n, i, pixel_ratio)
+            plot_bar_with_normal(axs[1], volume_bars, volume_mean, volume_std, 'VOLUME', unit, n, i, pixel_ratio, volume_interval)
 
         if updated:
             plot.pause(0.2)

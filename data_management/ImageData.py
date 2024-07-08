@@ -12,28 +12,27 @@ class ImageData:
     max_batches = 5
 
     def __init__(self, n_droplets: int, size: tuple,
-                 width_sums: list, height_sums: list, area_sums: list, 
-                 width_bars: dict, height_bars: dict, area_bars: dict, 
-                 area_interval: int, unit: str, images_added = 1):
+                 diameter_sums: list, volume_sums: list,
+                 diameter_bars: dict, volume_bars: dict, 
+                 volume_interval: list,
+                 unit: str, images_added = 1):
 
         self.n_droplets = n_droplets
         self.size = size
 
-        self.width_sums = width_sums
-        self.height_sums = height_sums
-        self.area_sums = area_sums
+        self.diameter_sums = diameter_sums
+        self.volume_sums = volume_sums
 
-        self.width_bars = width_bars
-        self.height_bars = height_bars
-        self.area_bars = area_bars
-        self.area_interval = area_interval
+        self.diameter_bars = diameter_bars
+        self.volume_bars = volume_bars
+
+        self.volume_interval = volume_interval
 
         self.unit = unit
         self.images_added = images_added
 
-        self._width_distribution = ["Width", "", 0, 1, self.unit, False] # [name, mean, stdd, unit, Calculated]
-        self._height_distribution = ["Height", "", 0, 1, self.unit, False]
-        self._area_distribution = ["Area", "", 0, 1, self.unit + "²", False]
+        self._diameter_distribution = ["Diameter", "", 0, 1, self.unit, False] # [name, mean, stdd, unit, Calculated]
+        self._volume_distribution = ["Volume", "", 0, 1, self.unit, False]
 
     def _get_mode(self, bars, distribution, interval = 1):
         if interval != 1:
@@ -62,9 +61,9 @@ class ImageData:
             distribution[5] = True
             mean = sums[0][0] / self.n_droplets[0] if self.n_droplets[0] else 0
             variance = sums[0][1] / self.n_droplets[0] - mean**2 if self.n_droplets[0] else 1
-            if distribution[0] == "Area" and -0.1<variance<0.1:
+            if distribution[0] == "Volume" and -0.7<variance<0.7:
                 variance = 0
-            elif distribution[0]!= "Area" and -0.01<variance<0.01:
+            elif distribution[0]!= "Volume" and -0.01<variance<0.01:
                 variance = 0
 
             distribution[2] = round(float(mean), rounding)
@@ -72,16 +71,12 @@ class ImageData:
         return distribution
 
     @property
-    def width_distribution(self):
-        return self._calculate_distribution(self.width_sums, self._width_distribution, 2)
+    def diameter_distribution(self):
+        return self._calculate_distribution(self.diameter_sums, self._diameter_distribution, 2)
 
     @property
-    def height_distribution(self):
-        return self._calculate_distribution(self.height_sums, self._height_distribution, 2)
-
-    @property
-    def area_distribution(self):
-        return self._calculate_distribution(self.area_sums, self._area_distribution, 2)
+    def volume_distribution(self):
+        return self._calculate_distribution(self.volume_sums, self._volume_distribution, 2)
 
     def _manage_addition(self, list1, list2, add, sub, interval = ""):
         total = add(list1[0], list2[0])
@@ -103,15 +98,13 @@ class ImageData:
     def __add__(self, other):
         new_n_droplets = self._manage_addition(self.n_droplets, other.n_droplets, sum_int, sub_int)
 
-        new_area_interval = self._manage_addition(self.area_interval, other.area_interval, sum_interval, sub_interval, "i")
+        new_diameter_bars = self._manage_addition(self.diameter_bars, other.diameter_bars, sum_bars, sub_bars)
+        new_volume_bars = self._manage_addition(self.volume_bars, other.volume_bars, sum_bars, sub_bars)
 
-        new_width_bars = self._manage_addition(self.width_bars, other.width_bars, sum_bars, sub_bars)
-        new_height_bars = self._manage_addition(self.height_bars, other.height_bars, sum_bars, sub_bars)
-        new_area_bars = self._manage_addition(self.area_bars, other.area_bars, sum_bars, sub_bars)
+        new_diameter_sums = self._manage_addition(self.diameter_sums, other.diameter_sums, sum_sums, sub_sums)
+        new_volume_sums =  self._manage_addition(self.volume_sums, other.volume_sums, sum_sums, sub_sums)
 
-        new_width_sums = self._manage_addition(self.width_sums, other.width_sums, sum_sums, sub_sums)
-        new_height_sums =  self._manage_addition(self.height_sums, other.height_sums, sum_sums, sub_sums)
-        new_area_sums =  self._manage_addition(self.area_sums, other.area_sums, sum_sums, sub_sums)
+        new_interval = self._manage_addition(self.volume_interval, other.volume_interval, sum_interval, sub_interval, "i")
 
         if ImageData.batch_size*ImageData.max_batches == self.images_added:
             self.images_added -= ImageData.batch_size
@@ -119,18 +112,17 @@ class ImageData:
         images_added = self.images_added + 1
 
         return ImageData(new_n_droplets, self.size, 
-                         new_width_sums, new_height_sums, new_area_sums, 
-                         new_width_bars, new_height_bars, new_area_bars, new_area_interval,
+                         new_diameter_sums, new_volume_sums, 
+                         new_diameter_bars, new_volume_bars,
+                         new_interval,
                          self.unit, images_added)
 
     def __str__(self):
-        self._get_mode(self.width_bars, self.width_distribution)
-        self._get_mode(self.height_bars, self.height_distribution)
-        self._get_mode(self.area_bars, self.area_distribution, self.area_interval)
+        self._get_mode(self.diameter_bars, self.diameter_distribution)
+        self._get_mode(self.volume_bars, self.volume_distribution)
         table_lines = tabulate(tabular_data=
-                        [self.width_distribution[:5], 
-                         self.height_distribution[:5], 
-                         self.area_distribution[:5]], 
+                        [self.diameter_distribution[:5], 
+                         self.volume_distribution[:5]], 
                         headers=[str(round(self.n_droplets[0]/self.images_added, 2)) + " Droplets/image", 
                                  "Mode", 
                                  "Mean", 

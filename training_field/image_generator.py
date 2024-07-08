@@ -2,8 +2,8 @@ from random import randint, choices, choice
 from PIL import Image
 from image_tools import (random_darkening, transparency, 
                          check_overlap, crop, rotate, 
-                         flip_flop, expand, color_filters,
-                         blur)
+                         flip_flop, expand, color_filters, 
+                         test, random_blur)
 
 
 def format_coordinates(x, y, small_width, small_height, big_width, big_height) -> str:
@@ -23,6 +23,8 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
     darken = choices(["background", "final", "none"], weights=[0.2, 0.5, 0.3], k=1)[0]
     if darken == "background":
         big_image = random_darkening(big_image)
+    
+    blur = choices(["none", "individually", "final"], weights=[0.2, 0.4, 0.4], k=1)[0]
 
     small_images = [Image.open(i).convert("RGBA") for i in small_images_path]
 
@@ -41,7 +43,9 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
         small_image = color_filters(small_image)
         small_image = random_darkening(small_image)
         small_image = transparency(small_image)
-        small_image = blur(small_image)
+        if blur == "individually":
+            small_image = test(small_image)
+
         small_width, small_height = small_image.size
 
         attempts = 0
@@ -68,6 +72,11 @@ def place_images(big_image_path, small_images_path, num_small_images, output_ima
 
     if darken == "final":
         combined_image = random_darkening(combined_image)
+    
+    if blur == "final":
+        combined_image = random_blur(combined_image)
+    
+    combined_image = combined_image.convert('RGB')
 
     combined_image.save(output_image_path)
 
