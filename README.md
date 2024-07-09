@@ -52,6 +52,8 @@ To illustrate, in green the real area that is calculated, in yellow the area tha
 
 ![Droplet error area illustration](imgs/readme_imgs/area_illustration.png)
 
+The calculation of the volume is more imprecise, as it asumes an spherical geometry. The diameter of this shphere is given by the mean of the height and the width from the bounding box of the droplet. 
+
 ## How data is added and an explanation of batches
 
 The standard deviation of the parameters, such as width, height and area is calculated with the incremental formula of the standard deviation:
@@ -114,6 +116,6 @@ The droplets and backgrounds used are choosen randomly for every training image.
 The background image is cropped to 640 pixels x 640 pixels when generating training images. The original size of 1024*704 became to heavy for the training, making it spend twice the memory and taking twice the time. 640 x 640 was a good medium point to train faster. So, to be clear. This change of size DOES NOT impact the precission of the final product, but it DOES increase the speed of the training.
 
 # Requirements
-The libraries needed to run main.py are **ultralytics**, **pillow**, **opencv-python** and **tabulate**. These can be automaticly installed by running **packages.py**. 
+The libraries needed to run main.py are **ultralytics**, **tabulate**. These can be automaticly installed by running **packages.py**. 
 
 (New libraries are added normally, so these requirements could be outdated)
