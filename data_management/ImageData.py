@@ -80,7 +80,8 @@ class ImageData:
 
     def _manage_addition(self, list1, list2, add, sub, interval = ""):
         total = add(list1[0], list2[0])
-        if self.images_added == ImageData.batch_size*ImageData.max_batches:
+        maximum_images = ImageData.batch_size*ImageData.max_batches
+        if self.images_added == maximum_images:
             removed_element = list1[1].pop(0)
             if interval == "i":
                 total = sub(total, list1[1])
@@ -88,7 +89,7 @@ class ImageData:
                 total = sub(total, removed_element)
 
         new_list = list1[1]
-        if not self.images_added%ImageData.batch_size:
+        if not (self.images_added % ImageData.batch_size):
             list1[1] = list1[1].append(list2[0])
         else:
             new_list[-1] = add(list1[1][-1], list2[1][-1])
@@ -106,7 +107,8 @@ class ImageData:
 
         new_interval = self._manage_addition(self.volume_interval, other.volume_interval, sum_interval, sub_interval, "i")
 
-        if ImageData.batch_size*ImageData.max_batches == self.images_added:
+        maximum_images = ImageData.batch_size*ImageData.max_batches
+        if maximum_images == self.images_added:
             self.images_added -= ImageData.batch_size
 
         images_added = self.images_added + 1

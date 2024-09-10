@@ -1,9 +1,7 @@
-/__pycache__
-data_management/__pycache__
-/training_field/__pycache__
 training_field/datasets/images/train
 training_field/datasets/images/val
 training_field/datasets/labels/train
 training_field/datasets/labels/val
 imgs/results/*
 .venv/
+__pycache__

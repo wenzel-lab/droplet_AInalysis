@@ -16,14 +16,6 @@ def get_dimentions(results, pixel_ratio, unit):
     heights_vector = (array.xyxy[:, 3] - array.xyxy[:, 1])
     diameters_vector = (widths_vector + heights_vector)/2
     volumes_vector = (diameters_vector**3)*sphere_constant
-    # areas_vector = torch.mul(widths_vector, heights_vector) * ellipse_constant
-
-    # width_sums = [widths_vector.sum().item() * pixel_ratio, ((widths_vector*pixel_ratio)**2).sum().item()]
-    # height_sums = [heights_vector.sum().item() * pixel_ratio, ((heights_vector* pixel_ratio)**2).sum().item()]
-    # area_sums = [areas_vector.sum().item() * pixel_ratio**2, ((areas_vector* pixel_ratio**2)**2).sum().item()]
-    # widths = (torch.round(widths_vector)).tolist()
-    # heights = (torch.round(heights_vector)).tolist()
-    # areas = (torch.round(areas_vector)).tolist()
 
     diameter_sums = [diameters_vector.sum().item() * pixel_ratio, ((diameters_vector*pixel_ratio)**2).sum().item()]
     volume_sums = [volumes_vector.sum().item() * pixel_ratio, ((volumes_vector * pixel_ratio**3)**2).sum().item()]
