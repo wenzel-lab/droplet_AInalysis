@@ -200,13 +200,6 @@ YOLOv8 weights (`.pt` files) are trained using the `train.py` script in the `tra
     - Resulting weights are stored in the `weights/` directory for use in analysis scripts.
 
 For more information on training or customizing models, see the `training_field/README.md` (if available) or contact the maintainers.
-```
-<img src="images/pixel_ratio_1.png" alt="history gif" style="width: 600px; height: auto;">
-
-```py
-PIXEL_RATIO = 0.5
-UNIT = "mm"
-```
 
 <img src="images/history.gif" alt="history gif" style="width: 600px; height: auto;">
 
@@ -237,7 +230,7 @@ See `CONTRIBUTING.md` for more guidelines (or create one if it does not exist).
 
 ## 📝 License
 
-This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this software with attribution.
+This project is licensed under the [MIT License](https://mit-license.org/). You are free to use, modify, and distribute this software with attribution.
 
 ---
 
