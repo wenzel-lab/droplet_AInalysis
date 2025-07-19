@@ -11,7 +11,9 @@ This tool performs automated detection and analysis of droplets in static micros
 | 📷 **Static image input**      | Analyze single or batch images (`.png`, `.jpg`) |
 | 🧠 **YOLOv8-based detection**  | Uses Ultralytics models (`.pt`) for droplet identification |
 | 🥇 **Model selection**         | Automatically compares weights and selects the best model |
-| 📊 **Histogram + normal fit**  | Plots diameter and volume distributions with Gaussian overlay |
+| 📊 **Enhanced statistics**     | Mean, standard deviation, mode & coefficient of variation (CV) displayed on plots |
+| 📈 **Multiple plot types**     | Generates mixed (hist+fit), histogram-only & normal-fit-only plots for diameter & volume |
+| 🗂 **Organized outputs**       | Separates `predictions/` and `statistics/` folders; includes `individual_weights/` previews |
 | 📁 **CSV export**              | Saves per-droplet and summary statistics |
 | 🎞️ **GIF of model iterations**| Generates a visual history of model predictions |
 
@@ -42,19 +44,25 @@ Then choose:
 - Whether to analyze a single test image (`PARAMETERS.py`) or all images
 - Whether to use the predefined YOLO model or test all .pt models and select the best by score
 
-4. Results will be saved in `imgs/results/<image_name>/`
+4. Results will be saved in `imgs/results/<image_name>/predictions/` and `imgs/results/<image_name>/statistics/`
 
 ---
 
 ## 📂 Outputs (per image)
 
-| File                        | Purpose                          |
-|-----------------------------|----------------------------------|
-| `best_prediction.jpg`       | Annotated image with overlays    |
-| `droplet_statistics.png`    | Diameter & volume histograms     |
-| `droplet_measurements.csv`  | Droplet-level data and summary   |
-| `history.gif`               | GIF of predictions per model     |
-| `model_performance.png`     | Model comparison chart           |
+| File / Folder                                   | Purpose                                  |
+|-------------------------------------------------|------------------------------------------|
+| `predictions/best_prediction.jpg`               | Annotated image with overlays            |
+| `predictions/individual_weights/*.jpg`          | Preview of each weight's predictions     |
+| `predictions/history.gif`                       | GIF of predictions per model             |
+| `predictions/model_performance.png`             | Model comparison chart                   |
+| `statistics/diameter_mixed.png`                 | Diameter histogram + normal fit          |
+| `statistics/diameter_hist.png`                  | Diameter histogram only                  |
+| `statistics/diameter_normal.png`                | Diameter normal fit (density)            |
+| `statistics/volume_mixed.png`                   | Volume histogram + normal fit            |
+| `statistics/volume_hist.png`                    | Volume histogram only                    |
+| `statistics/volume_normal.png`                  | Volume normal fit (density)              |
+| `statistics/droplet_measurements.csv`           | Droplet-level data and summary           |
 
 ---
 

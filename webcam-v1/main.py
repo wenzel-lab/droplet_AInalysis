@@ -1,4 +1,4 @@
-mode = input("\nWELCOME TO DROPLET AINALYSYS\n" +
+mode = input("\nWELCOME TO DROPLET AINALYSIS\n" +
              "Choose a mode:\n" + 
              "1. 'G' key for Graph mode (plots/statistics)\n" + 
              "2. 'L' key for Live View (annotated webcam only)\n" + 

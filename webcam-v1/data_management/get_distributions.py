@@ -16,7 +16,7 @@ def get_dimensions(results, pixel_ratio, unit):
     widths_vector = (array.xyxy[:, 2] - array.xyxy[:, 0])
     heights_vector = (array.xyxy[:, 3] - array.xyxy[:, 1])
     diameters_vector = (widths_vector + heights_vector)/2
-    volumes_vector = (diameters_vector**3)*sphere_constant * 1e-3  # Convert um^3 to pL
+    volumes_vector = ( (diameters_vector * pixel_ratio) ** 3 ) * sphere_constant * 1e-3  # Convert µm³ to pL
 
     diameter_sums = [diameters_vector.sum().item() * pixel_ratio, ((diameters_vector*pixel_ratio)**2).sum().item()]
     volume_sums = [volumes_vector.sum().item() * pixel_ratio, ((volumes_vector * pixel_ratio**3)**2).sum().item()]

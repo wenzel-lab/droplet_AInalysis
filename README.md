@@ -6,8 +6,6 @@
 
 Automated detection and analysis of microfluidic droplets using deep learning (YOLOv8). Supports both real-time webcam analysis and static image batch processing, with rich statistics, annotated outputs, and visualizations.
 
----
-
 ## 🚀 Features
 
 | Feature                           | Description |
@@ -44,7 +42,8 @@ Automated detection and analysis of microfluidic droplets using deep learning (Y
 ## 📂 Repository Structure
 
 - `webcam-v1/` — Real-time webcam droplet detection (live mode, unified UI, terminal mode)
-- `static-image-v1/` — Analyze static images or batches, benchmark models, export stats and plots
+- `video-v1/` — Analyse recorded videos; outputs annotated MP4 + per-frame images and full statistics/plots
+- `static-image-v1/` — Analyse single images or batches, benchmark models, export stats/plots
 - `examples/` — Ready-to-run sample suite with images, weights, and scripts for demo/testing
 - `imgs/` — (in each module) Holds input images and output results
 - `weights/` — YOLOv8 model weights (`.pt` files)
@@ -86,7 +85,17 @@ pip install -r requirements.txt
 - Optionally, test all YOLO weights and auto-select the best
 - Results (annotated images, plots, CSVs, GIFs) saved in `imgs/results/<image_name>/`
 
-### 3. **Examples & Demo Scripts**
+### 3. **Video Analysis**
+- Go to `video-v1/` and run:
+  ```bash
+  python main.py
+  ```
+- Processes every `.mp4`, `.avi`, `.mov`, `.mkv`, or `.h264` in `videos/samples/` (or specify one).
+- Generates `results/<video_name>/` with:
+  - `predictions/annotated_<name>.mp4` & `annotated_frames/`
+  - `statistics/` folder containing histograms and `droplet_measurements.csv`
+
+### 4. **Examples & Demo Scripts**
 - Go to `examples/` and try:
   ```bash
   python see_ellipses.py
@@ -98,11 +107,12 @@ pip install -r requirements.txt
 
 ## 📤 Outputs & Results
 
-- **best_prediction.jpg** — Annotated image with overlays
-- **droplet_statistics.png** — Diameter & volume histograms
-- **droplet_measurements.csv** — Per-droplet and summary statistics
-- **history.gif** — GIF of predictions per model/weight
-- **model_performance.png** — Model comparison chart
+- **predictions/** — Annotated images (`*_pred.jpg`) or videos (`annotated_<name>.mp4`) plus optional per-frame PNGs
+- **statistics/diameter_hist.png** — Diameter histogram (µm)
+- **statistics/volume_hist.png** — Volume histogram (pL)
+- **statistics/droplet_measurements.csv** — Per-droplet measurements + summary (mean, SD, mode, CV)
+- **statistics/model_comparison.png** — Performance chart across all tested weights
+- **statistics/history.gif** — Timeline GIF of predictions (static-image workflow)
 
 Unified UI (webcam mode) shows live video, diameter, and volume stats in one window.
 
@@ -200,6 +210,13 @@ YOLOv8 weights (`.pt` files) are trained using the `train.py` script in the `tra
     - Resulting weights are stored in the `weights/` directory for use in analysis scripts.
 
 For more information on training or customizing models, see the `training_field/README.md` (if available) or contact the maintainers.
+```
+<img src="images/pixel_ratio_1.png" alt="history gif" style="width: 600px; height: auto;">
+
+```py
+PIXEL_RATIO = 0.5
+UNIT = "mm"
+```
 
 <img src="images/history.gif" alt="history gif" style="width: 600px; height: auto;">
 
@@ -230,7 +247,7 @@ See `CONTRIBUTING.md` for more guidelines (or create one if it does not exist).
 
 ## 📝 License
 
-This project is licensed under the [MIT License](https://mit-license.org/). You are free to use, modify, and distribute this software with attribution.
+This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this software with attribution.
 
 ---
 
@@ -240,7 +257,7 @@ If you use Droplet AInalysis in your research, please cite it as follows:
 
 ```bibtex
 @misc{dropletAInalysis,
-  author       = {Your Name and Collaborators},
+  author       = {Domingo Veloso-Arias and Pierre Padilla-Huamantinco and Tobias Wenzel},
   title        = {Droplet AInalysis: Automated Microfluidic Droplet Detection and Analysis},
   year         = {2025},
   howpublished = {\url{https://github.com/wenzel-lab/droplet_AInalysis}},

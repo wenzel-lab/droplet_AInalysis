@@ -97,11 +97,14 @@ def clean_output_directory(output_dir):
     if path.exists(output_dir):
         shutil.rmtree(output_dir)
     mkdir(output_dir)
-    for name in ["best_prediction.jpg", "history.gif", "droplet_measurements.csv", "droplet_statistics.png", "model_performance.png"]:
-        p = path.join(output_dir, name)
-        if path.exists(p): remove(p)
-    for f in glob(path.join(output_dir, "latest_prediction_*.jpg")):
-        remove(f)
+    
+    # Create organized subdirectories
+    predictions_dir = path.join(output_dir, "predictions")
+    statistics_dir = path.join(output_dir, "statistics")
+    individual_weights_dir = path.join(predictions_dir, "individual_weights")
+    mkdir(predictions_dir)
+    mkdir(statistics_dir)
+    mkdir(individual_weights_dir)
 
 def plot_model_performance(stats, output_dir):
     weights = [s['weight'] for s in stats]
@@ -125,6 +128,11 @@ def plot_model_performance(stats, output_dir):
     plot.close()
 
 def show_graphics(image_data, output_dir, results):
+    
+    # Create separate folders for organized output
+    statistics_dir = path.join(output_dir, "statistics")
+    if not path.exists(statistics_dir):
+        mkdir(statistics_dir)
     
     # Filtered boxes: same logic used across whole pipeline
     boxes = filter_boxes(results)
@@ -153,8 +161,8 @@ def show_graphics(image_data, output_dir, results):
     n = len(diameters_um)
     unit = image_data.unit
 
-    # Export CSV
-    with open(path.join(output_dir, "droplet_measurements.csv"), "w", newline="") as f:
+    # Export CSV to statistics folder
+    with open(path.join(statistics_dir, "droplet_measurements.csv"), "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["Index", f"Diameter ({unit})", "Volume (pL)"])
         for i, (d, v) in enumerate(zip(diameters_um, volumes_pl), 1):
@@ -168,33 +176,146 @@ def show_graphics(image_data, output_dir, results):
         writer.writerow(["Mean volume (pL)", round(v_mean, 2)])
         writer.writerow(["Std volume (pL)", round(v_std, 2)])
 
-    # Plot histograms
-    fig, axs = plot.subplots(1, 2, figsize=(12, 5), num=f"{n} droplets detected")
-    fig.suptitle(f"{n} droplets detected", fontsize=14)
-
-    # Diameter histogram
-    x_diam = np.linspace(min(diameters_um), max(diameters_um), 100)
-    y_diam = stats.norm.pdf(x_diam, d_mean, d_std)
-    axs[0].hist(diameters_um, bins=15, color='skyblue', alpha=0.6, label='Data')
-    axs[0].plot(x_diam, y_diam * n * (x_diam[1] - x_diam[0]), color='darkblue', lw=2, label='Normal Fit')
-    axs[0].set_title(f"DIAMETER\nμ = {round(d_mean,2)} {unit}, σ = {round(d_std,2)} {unit}, CV = {round(d_std/d_mean,3) if d_mean else 'NA'}, mode = {round(d_mode,2)} {unit}")
-    axs[0].set_xlabel(f"Diameter ({unit})")
-    axs[0].set_ylabel("Count")
-    axs[0].legend()
-
-    # Volume histogram
-    x_vol = np.linspace(min(volumes_pl), max(volumes_pl), 100)
-    y_vol = stats.norm.pdf(x_vol, v_mean, v_std)
-    axs[1].hist(volumes_pl, bins=15, color='salmon', alpha=0.6, label='Data')
-    axs[1].plot(x_vol, y_vol * n * (x_vol[1] - x_vol[0]), color='darkred', lw=2, label='Normal Fit')
-    axs[1].set_title(f"VOLUME\nμ = {round(v_mean,2)} pL, σ = {round(v_std,2)} pL , mode = {round(v_mode,2)} pL")
-    axs[1].set_xlabel("Volume (pL)")
-    axs[1].set_ylabel("Count")
-    axs[1].legend()
+    # Generate enhanced plots matching video-v1 style
+    from scipy.stats import norm
     
-    plot.tight_layout()
-    plot.savefig(path.join(output_dir, "droplet_statistics.png"))
-    plot.close()
+    # Calculate coefficient of variation for diameter
+    cv_diameter = (d_std / d_mean) if d_mean else 0
+    
+    # Generate diameter plots (3 separate plots)
+    if diameters_um:
+        # Statistics text box for diameter plots
+        stats_text_d = f'Droplets detected: {n}\n'
+        stats_text_d += f'Mean: {d_mean:.2f} μm\n'
+        stats_text_d += f'Std Dev: {d_std:.2f} μm\n'
+        stats_text_d += f'CV: {cv_diameter:.2f}\n'
+        stats_text_d += f'Mode: {d_mode:.2f} μm'
+        
+        # 1. Mixed plot: Histogram with normal fit overlay
+        plot.figure(figsize=(8,6))
+        n_hist, bins, patches = plot.hist(diameters_um, bins=30, color='skyblue', edgecolor='black', alpha=0.7)
+        
+        # Add normal fit curve scaled to match histogram counts
+        x = np.linspace(min(diameters_um), max(diameters_um), 100)
+        bin_width = (max(diameters_um) - min(diameters_um)) / 30
+        normal_fit = norm.pdf(x, d_mean, d_std) * len(diameters_um) * bin_width
+        plot.plot(x, normal_fit, 'r-', linewidth=2, label='Normal fit')
+        
+        plot.title('Droplet Diameter Distribution (Mixed)')
+        plot.xlabel('Diameter (μm)')
+        plot.ylabel('Count')
+        plot.legend()
+        
+        plot.text(0.98, 0.98, stats_text_d, transform=plot.gca().transAxes, 
+                verticalalignment='top', horizontalalignment='right',
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        
+        plot.tight_layout()
+        plot.savefig(path.join(statistics_dir, 'diameter_mixed.png'), dpi=300, bbox_inches='tight')
+        plot.close()
+        
+        # 2. Histogram only
+        plot.figure(figsize=(8,6))
+        plot.hist(diameters_um, bins=30, color='skyblue', edgecolor='black', alpha=0.7)
+        
+        plot.title('Droplet Diameter Distribution (Histogram)')
+        plot.xlabel('Diameter (μm)')
+        plot.ylabel('Count')
+        
+        plot.text(0.98, 0.98, stats_text_d, transform=plot.gca().transAxes, 
+                verticalalignment='top', horizontalalignment='right',
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        
+        plot.tight_layout()
+        plot.savefig(path.join(statistics_dir, 'diameter_hist.png'), dpi=300, bbox_inches='tight')
+        plot.close()
+        
+        # 3. Normal fit only
+        plot.figure(figsize=(8,6))
+        x = np.linspace(min(diameters_um), max(diameters_um), 100)
+        normal_fit = norm.pdf(x, d_mean, d_std)
+        plot.plot(x, normal_fit, 'r-', linewidth=3)
+        
+        plot.title('Droplet Diameter Distribution (Normal Fit)')
+        plot.xlabel('Diameter (μm)')
+        plot.ylabel('Density')
+        plot.grid(True, alpha=0.3)
+        
+        plot.text(0.98, 0.98, stats_text_d, transform=plot.gca().transAxes, 
+                verticalalignment='top', horizontalalignment='right',
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        
+        plot.tight_layout()
+        plot.savefig(path.join(statistics_dir, 'diameter_normal.png'), dpi=300, bbox_inches='tight')
+        plot.close()
+    
+    # Generate volume plots (3 separate plots)
+    if volumes_pl:
+        # Statistics text box for volume plots
+        stats_text_v = f'Droplets detected: {n}\n'
+        stats_text_v += f'Mean: {v_mean:.2f} pL\n'
+        stats_text_v += f'Std Dev: {v_std:.2f} pL\n'
+        stats_text_v += f'Mode: {v_mode:.2f} pL'
+        
+        # 1. Mixed plot: Histogram with normal fit overlay
+        plot.figure(figsize=(8,6))
+        n_hist, bins, patches = plot.hist(volumes_pl, bins=30, color='salmon', edgecolor='black', alpha=0.7)
+        
+        # Add normal fit curve scaled to match histogram counts
+        x = np.linspace(min(volumes_pl), max(volumes_pl), 100)
+        bin_width = (max(volumes_pl) - min(volumes_pl)) / 30
+        normal_fit = norm.pdf(x, v_mean, v_std) * len(volumes_pl) * bin_width
+        plot.plot(x, normal_fit, 'r-', linewidth=2, label='Normal fit')
+        
+        plot.title('Droplet Volume Distribution (Mixed)')
+        plot.xlabel('Volume (pL)')
+        plot.ylabel('Count')
+        plot.legend()
+        
+        plot.text(0.98, 0.98, stats_text_v, transform=plot.gca().transAxes, 
+                verticalalignment='top', horizontalalignment='right',
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        
+        plot.tight_layout()
+        plot.savefig(path.join(statistics_dir, 'volume_mixed.png'), dpi=300, bbox_inches='tight')
+        plot.close()
+        
+        # 2. Histogram only
+        plot.figure(figsize=(8,6))
+        plot.hist(volumes_pl, bins=30, color='salmon', edgecolor='black', alpha=0.7)
+        
+        plot.title('Droplet Volume Distribution (Histogram)')
+        plot.xlabel('Volume (pL)')
+        plot.ylabel('Count')
+        
+        plot.text(0.98, 0.98, stats_text_v, transform=plot.gca().transAxes, 
+                verticalalignment='top', horizontalalignment='right',
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        
+        plot.tight_layout()
+        plot.savefig(path.join(statistics_dir, 'volume_hist.png'), dpi=300, bbox_inches='tight')
+        plot.close()
+        
+        # 3. Normal fit only
+        plot.figure(figsize=(8,6))
+        x = np.linspace(min(volumes_pl), max(volumes_pl), 100)
+        normal_fit = norm.pdf(x, v_mean, v_std)
+        plot.plot(x, normal_fit, 'r-', linewidth=3)
+        
+        plot.title('Droplet Volume Distribution (Normal Fit)')
+        plot.xlabel('Volume (pL)')
+        plot.ylabel('Density')
+        plot.grid(True, alpha=0.3)
+        
+        plot.text(0.98, 0.98, stats_text_v, transform=plot.gca().transAxes, 
+                verticalalignment='top', horizontalalignment='right',
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        
+        plot.tight_layout()
+        plot.savefig(path.join(statistics_dir, 'volume_normal.png'), dpi=300, bbox_inches='tight')
+        plot.close()
+    
+    # droplet_statistics.png removed as requested
 
 def filter_boxes(results):
     """Apply consistent filtering to YOLO box predictions."""
@@ -262,7 +383,8 @@ for image_path in image_paths:
         })
 
         img = cv2.imread(image_path)
-        get_boxes(results, img.copy(), image_name, weight_path)
+        individual_weights_dir = path.join(output_dir, "predictions", "individual_weights")
+        get_boxes(results, img.copy(), image_name, weight_path, individual_weights_dir)
         overlayed = overlay_info_on_image(img.copy(), weight_name, num_droplets, mean_conf, filtered_boxes)
         gif_frames.append(cv2.cvtColor(overlayed, cv2.COLOR_BGR2RGB))
 
@@ -272,10 +394,11 @@ for image_path in image_paths:
                 best_score = score
                 best_weight_name = weight_name
 
-    # Save GIF and plot performance
+    # Save GIF and plot performance to predictions folder
+    predictions_dir = path.join(output_dir, "predictions")
     gif_frames.extend([gif_frames[-1]] * 2)
-    imageio.mimsave(path.join(output_dir, "history.gif"), gif_frames, duration=len(gif_frames)*90, loop=0)
-    plot_model_performance(performance_stats, output_dir)
+    imageio.mimsave(path.join(predictions_dir, "history.gif"), gif_frames, duration=len(gif_frames)*90, loop=0)
+    plot_model_performance(performance_stats, predictions_dir)
 
     # Decide which weight to use for final analysis
     final_weight = WEIGHT if model_mode == "1" else best_weight_name
@@ -290,9 +413,10 @@ for image_path in image_paths:
     mean_conf = float(torch.mean(filtered_boxes.conf)) if num_droplets else 0.0
 
     img_best = cv2.imread(image_path)
-    get_boxes(results, img_best, image_name, final_weight)
+    individual_weights_dir = path.join(output_dir, "predictions", "individual_weights")
+    get_boxes(results, img_best, image_name, final_weight, individual_weights_dir)
     img_annotated = overlay_info_on_image(img_best.copy(), final_weight, num_droplets, mean_conf, filtered_boxes)
-    cv2.imwrite(path.join(output_dir, "best_prediction.jpg"), img_annotated)
+    cv2.imwrite(path.join(predictions_dir, "best_prediction.jpg"), img_annotated)
 
     image_data = get_dimensions(results, PIXEL_RATIO, UNIT)
     print(f"{image_name} → {image_data.n_droplets[0]} droplets detected.")

@@ -43,7 +43,9 @@ def set_up(evento, queue):
     from os.path import join
     from ultralytics import YOLO as Yolo
     
-    weights_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "weights", WEIGHT)
+    # Load weight from webcam-v1 local weights folder
+    weights_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "weights")
+    weights_path = os.path.join(weights_dir, WEIGHT)
     model = Yolo(weights_path)
     results = model.predict(join("imgs", "real_imgs","none.jpg"), imgsz=640, max_det=MAX_DETECT, verbose=False)
     image_data = get_dimensions(results, PIXEL_RATIO, UNIT)

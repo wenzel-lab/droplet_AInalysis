@@ -1,8 +1,6 @@
-from scipy import stats
 import numpy as np
 import matplotlib.pyplot as plot
 from matplotlib.widgets import Button
-from math import pi, sqrt
 
 
 def group_in_intervals(bars, interval):
@@ -27,52 +25,52 @@ def pause(_, events):
     else:
         events["pause"].clear()
 
-constant = 1/sqrt(2*pi)
-def plot_bar_with_normal(ax, bars, mean, std, title, unit, n, i, pixel_ratio, interval = 1):
+def plot_bar(ax, bars, mean, std, title, unit, n, i, pixel_ratio, interval=1):
+    """Render histogram + normal fit matching the style of static-image-v1/video-v1."""
     ax.clear()
-    plus_minus = ""
-    if title == "VOLUME":
-        pixel_ratio *= pixel_ratio
-        plus_minus = f"± {round(interval*pixel_ratio*0.5, 2)}"
-    
-    categories = []
-    quantities = []
-    max_quantity = mode = 0
-    for size, quantity in bars:
-        categories.append(size * pixel_ratio)
-        quantities.append(quantity)
-        if quantity > max_quantity:
-            max_quantity = quantity
-            mode = size
-    mode = round(mode * pixel_ratio, 2)
 
-    ax.bar(categories, quantities, width = interval * pixel_ratio * 0.8, color='skyblue')
+    # Choose colour palette consistent with other pipelines
+    bar_color = 'skyblue' if title == "DIAMETER" else 'salmon'
+    line_color = 'r'
 
-    if len(categories):
-        max_size = categories[-1]
-    else:
-        max_size = 0
-    # Only plot the normal curve if std is positive and not NaN
-    if std > 0 and not np.isnan(std):
-        x = np.linspace(max(mean - 3.5*std, 0), max(mean + 3.5*std, max_size), 100)
-        y = stats.norm.pdf(x, mean, std)
-        height = n * interval * pixel_ratio
-        ax.plot(x, y*height, color='darkblue')
-        if len(categories):
-            ax.set_ylim(0, max(max_quantity, height*(constant)/std)*1.1)
-        else:
-            ax.set_ylim(0, 1.15)
-    else:
-        # If std is zero or NaN, skip normal curve and set default y-limits
-        ax.set_ylim(0, 1.15)
+    # Adjust pixel_ratio for volume conversion (µm³→pL)
+    display_ratio = pixel_ratio if title == "DIAMETER" else 1
+    categories, quantities = [], []
+    max_quantity, mode_val = 0, 0
+    for size, qty in bars:
+        size_disp = size * display_ratio
+        categories.append(size_disp)
+        quantities.append(qty)
+        if qty > max_quantity:
+            max_quantity = qty
+            mode_val = size_disp
 
-    ax.set_title(f"{title}  |  mode = {mode} {plus_minus} {unit}  |")
-    ax.set_xlabel(f"|  μ = {mean} {unit}  |  |  σ = {std} {unit}  |")
+    # Histogram
+    ax.bar(categories, quantities, width=interval * display_ratio * 0.8, color=bar_color, edgecolor='black', alpha=0.7)
+
+
+    # Text box with stats (top-right)
+    cv = (std / mean) if mean else 0
+    stats_text = (f'Droplets: {n}\n'
+                  f'Frames: {i}\n'
+                  f'Mean: {mean:.2f} {unit}\n'
+                  f'Std Dev: {std:.2f} {unit}\n')
     if title == "DIAMETER":
-        ax.set_ylabel("Quantity")
-        ax.text(0.019, 0.985, "Droplets/image = " + str(round(n/i)), 
-                transform=ax.transAxes, fontsize=12, 
-                verticalalignment='top', bbox=dict(facecolor='white', alpha=0.5))
+        stats_text += f'CV: {cv:.2f}\n'
+    stats_text += f'Mode: {mode_val:.2f} {unit}'
+
+    ax.text(0.98, 0.98, stats_text, transform=ax.transAxes,
+            verticalalignment='top', horizontalalignment='right',
+            bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+    ax.set_title(f'{title.capitalize()} Distribution')
+    ax.set_xlabel(f'{title.capitalize()} ({unit})')
+    ax.set_ylabel('Count')
+    # Make x-axis labels integers when dealing with volume
+    if title == 'VOLUME':
+        import matplotlib.ticker as mtick
+        ax.xaxis.set_major_locator(mtick.MaxNLocator(integer=True))
+    ax.grid(True, alpha=0.2)
 
 def show_combined_ui(model, cap, events, main_queue, pixel_ratio):
     import cv2
@@ -93,6 +91,8 @@ def show_combined_ui(model, cap, events, main_queue, pixel_ratio):
     btn_p.on_clicked(lambda _: pause(_, events))
 
     frame = None
+    last_n = 0
+    last_i = 0
     while not events["exit"].is_set():
         updated = False
         # --- LIVE VIEW (LEFT) ---
@@ -127,10 +127,13 @@ def show_combined_ui(model, cap, events, main_queue, pixel_ratio):
 
             n = image_data.n_droplets[0]
             i = image_data.images_added
-            fig.suptitle(f'{i} images considered')
+            last_n = n
+            last_i = i
 
-            plot_bar_with_normal(axs[1], diameter_bars, diameter_mean, diameter_std, "DIAMETER", image_data.diameter_unit, n, i, pixel_ratio)
-            plot_bar_with_normal(axs[2], volume_bars, volume_mean, volume_std, 'VOLUME', image_data.volume_unit, n, i, pixel_ratio, volume_interval)
+            plot_bar(axs[1], diameter_bars, diameter_mean, diameter_std, "DIAMETER", image_data.diameter_unit, n, i, pixel_ratio)
+            plot_bar(axs[2], volume_bars, volume_mean, volume_std, 'VOLUME', image_data.volume_unit, n, i, pixel_ratio, volume_interval)
+        # Update live view title with latest counts
+        axs[0].set_xlabel(f'Droplets detected: {last_n}    |    Frames processed: {last_i}')
         if updated or ret:
             plot.pause(0.02)
     plot.ioff()
@@ -170,11 +173,10 @@ def show_graphics(events, main_queue, pixel_ratio):
             volume_bars = group_in_intervals(volume_bars, volume_interval)
 
             n = image_data.n_droplets[0]
-            i = image_data.images_added
-            fig.suptitle(f'{i} images considered')
+            i = image_data.images_added           
 
-            plot_bar_with_normal(axs[0], diameter_bars, diameter_mean, diameter_std, "DIAMETER", image_data.diameter_unit, n, i, pixel_ratio)
-            plot_bar_with_normal(axs[1], volume_bars, volume_mean, volume_std, 'VOLUME', image_data.volume_unit, n, i, pixel_ratio, volume_interval)
+            plot_bar(axs[0], diameter_bars, diameter_mean, diameter_std, "DIAMETER", image_data.diameter_unit, n, i, pixel_ratio)
+            plot_bar(axs[1], volume_bars, volume_mean, volume_std, 'VOLUME', image_data.volume_unit, n, i, pixel_ratio, volume_interval)
 
         if updated:
             plot.pause(0.2)
